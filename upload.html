@@ -1,142 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Watch - ZAPFIX</title>
-<style>
-body{ margin:0; font-family: Arial; background:#E0F3FF; }
-header{ display:flex; align-items:center; padding:10px 20px; background:white; box-shadow:0 2px 6px rgba(0,0,0,0.1); gap:15px; position:sticky; top:0; z-index:100; }
-header h1{ color:black; margin:0; font-size:24px; font-weight:bold; }
-header input[type=text]{ margin-left:auto; padding:8px 12px; border-radius:20px; border:1px solid #ccc; width:300px; }
-main{ display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
-.video-container{ flex:3; min-width:300px; }
-.video-container video{ width:100%; border-radius:12px; }
-.video-info{ margin-top:10px; }
-#likeBtn, #shareBtn{ margin-right:10px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
-#likeBtn{ background:#0078D7; color:white; }
-#shareBtn{ background:#00cc77; color:white; }
-.comment-section{ margin-top:15px; }
-.comment-section input{ width:48%; margin-right:4%; padding:6px 10px; border-radius:6px; border:1px solid #ccc; }
-.comment-section button{ padding:6px 12px; border:none; border-radius:6px; background:#0078D7; color:white; cursor:pointer; font-weight:bold; }
-.comment-list{ margin-top:10px; }
-.comment-item{ background:white; padding:6px 10px; border-radius:6px; margin-bottom:6px; }
-.suggestions{ flex:1; min-width:200px; display:flex; flex-direction:column; gap:10px; }
-.suggestion-card{ background:white; border-radius:12px; padding:10px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.1); display:flex; flex-direction:column; }
-.suggestion-card img{ width:100%; border-radius:8px; object-fit:cover; }
-.suggestion-card h4{ font-size:14px; margin:6px 0 0 0; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Video</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #E0F3FF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      color: #333;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      font-size: 32px;
+      color: #0077cc;
+    }
+
+    .upload-box {
+      background: #fff;
+      padding: 25px 35px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+
+    .preview {
+      width: 300px;
+      height: 190px;
+      background-color: #f0f0f0;
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 14px;
+      margin: 5px 0;
+      overflow: hidden;
+    }
+
+    .preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-label {
+      display: inline-block;
+      background-color: #0077cc;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+      transition: background 0.3s;
+    }
+
+    .file-label:hover {
+      background-color: #005fa3;
+    }
+
+    button {
+      padding: 12px;
+      background-color: #0077cc;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    /* Error popup */
+    #errorPopup {
+      display:none;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #FF4D4D;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 999;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>ZAPFIX</h1>
-  <input type="text" id="searchInput" placeholder="Search videos...">
-</header>
+<h1>Upload Video</h1>
 
-<main>
-  <div class="video-container">
-    <video id="videoPlayer" controls></video>
-    <div class="video-info">
-      <h2 id="videoTitle"></h2>
-      <p id="videoDescription"></p>
-      <button id="likeBtn">Like (0)</button>
-      <button id="shareBtn">Share</button>
-    </div>
-    <div class="comment-section">
-      <input type="text" id="commentName" placeholder="Your name">
-      <input type="text" id="commentText" placeholder="Your comment">
-      <button id="addCommentBtn">Add Comment</button>
-      <div class="comment-list" id="commentList"></div>
-    </div>
+<div class="upload-box">
+  <div>
+    <label for="title">Title</label>
+    <input type="text" id="title" placeholder="Enter video title">
   </div>
-  <div class="suggestions" id="suggestions"></div>
-</main>
+
+  <div>
+    <label for="description">Description</label>
+    <textarea id="description" placeholder="Enter video description..."></textarea>
+  </div>
+
+  <div>
+    <label>Thumbnail (300x190)</label>
+    <div class="preview" id="thumbPreview">No thumbnail selected</div>
+    <input type="file" id="thumbnail" accept="image/*">
+    <label class="file-label" for="thumbnail">Choose Thumbnail</label>
+  </div>
+
+  <div>
+    <label>Video (300x190)</label>
+    <div class="preview" id="videoPreview">No video selected</div>
+    <input type="file" id="video" accept="video/*">
+    <label class="file-label" for="video">Choose Video</label>
+  </div>
+
+  <button id="uploadBtn">Upload</button>
+</div>
+
+<div id="errorPopup">Error message</div>
 
 <script>
-let videos = JSON.parse(localStorage.getItem("videos") || "[]");
-let params = new URLSearchParams(window.location.search);
-let videoId = parseInt(params.get("id")) || null;
-let selectedVideo = videos.find(v=>v.id===videoId);
+let thumbnailData = "", videoData = "";
 
-if(!selectedVideo){
-  alert("Video not found!");
-  window.location.href="feed.html";
-}
-
-// Elements
-const videoPlayer = document.getElementById("videoPlayer");
-const titleEl = document.getElementById("videoTitle");
-const descEl = document.getElementById("videoDescription");
-const likeBtn = document.getElementById("likeBtn");
-const shareBtn = document.getElementById("shareBtn");
-const commentList = document.getElementById("commentList");
-const addCommentBtn = document.getElementById("addCommentBtn");
-
-// Set video info
-videoPlayer.src = selectedVideo.video;
-titleEl.textContent = selectedVideo.title;
-descEl.textContent = selectedVideo.description;
-likeBtn.textContent = `Like (${selectedVideo.likes})`;
-
-// Like button functionality
-likeBtn.onclick = ()=>{
-  selectedVideo.likes++;
-  likeBtn.textContent = `Like (${selectedVideo.likes})`;
-  let index = videos.findIndex(v=>v.id===videoId);
-  videos[index]=selectedVideo;
-  localStorage.setItem("videos", JSON.stringify(videos));
-}
-
-// Share button
-shareBtn.onclick = ()=>{
-  const link = window.location.href;
-  prompt("Copy this link:", link);
-}
-
-// Render comments
-function renderComments(){
-  commentList.innerHTML="";
-  selectedVideo.comments.forEach(c=>{
-    const div = document.createElement("div");
-    div.className="comment-item";
-    div.innerHTML=`<strong>${c.name}</strong>: ${c.text}`;
-    commentList.appendChild(div);
-  });
-}
-renderComments();
-
-// Add comment
-addCommentBtn.onclick=()=>{
-  const name = document.getElementById("commentName").value.trim();
-  const text = document.getElementById("commentText").value.trim();
-  if(!name || !text){ alert("Enter both name and comment!"); return; }
-  selectedVideo.comments.push({name,text});
-  let index = videos.findIndex(v=>v.id===videoId);
-  videos[index]=selectedVideo;
-  localStorage.setItem("videos", JSON.stringify(videos));
-  document.getElementById("commentName").value="";
-  document.getElementById("commentText").value="";
-  renderComments();
-}
-
-// Suggestions
-const suggestionsEl = document.getElementById("suggestions");
-videos.filter(v=>v.id!==videoId).forEach(v=>{
-  const div = document.createElement("div");
-  div.className="suggestion-card";
-  div.innerHTML=`<img src="${v.thumbnail}"><h4>${v.title}</h4>`;
-  div.onclick=()=>{ window.location.href="watch.html?id="+v.id; }
-  suggestionsEl.appendChild(div);
+// Thumbnail preview
+document.getElementById("thumbnail").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      thumbnailData = ev.target.result;
+      document.getElementById("thumbPreview").innerHTML = `<img src="${thumbnailData}" alt="Thumbnail">`;
+    }
+    reader.readAsDataURL(file);
+  } else {
+    document.getElementById("thumbPreview").innerHTML = "No thumbnail selected";
+  }
 });
 
-// Search in watch page
-document.getElementById("searchInput").addEventListener("keypress", function(e){
-  if(e.key==="Enter"){
-    const query=this.value.toLowerCase();
-    const filtered = videos.filter(v=>v.title.toLowerCase().includes(query));
-    localStorage.setItem("searchResults", JSON.stringify(filtered));
-    window.location.href="feed.html";
+// Video preview
+document.getElementById("video").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      videoData = ev.target.result;
+      document.getElementById("videoPreview").innerHTML = `<img src="https://via.placeholder.com/300x190?text=Video+Selected" alt="Video Preview">`;
+    }
+    reader.readAsDataURL(file);
+  } else {
+    document.getElementById("videoPreview").innerHTML = "No video selected";
+  }
+});
+
+// Show error popup
+function showError(message){
+  const popup = document.getElementById("errorPopup");
+  popup.textContent = message;
+  popup.style.display = "block";
+  setTimeout(()=>{ popup.style.display="none"; }, 3000);
+}
+
+// Upload video
+document.getElementById("uploadBtn").addEventListener("click", function(){
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+
+  if(!title) return showError("Please enter a video title!");
+  if(!description) return showError("Please enter a video description!");
+  if(!thumbnailData) return showError("Please upload a thumbnail!");
+  if(!videoData) return showError("Please upload a video!");
+
+  const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+  const id = Date.now(); // unique ID
+  videos.push({
+    id,
+    title,
+    description,
+    thumbnail: thumbnailData,
+    video: videoData,
+    likes: 0,
+    comments: []
+  });
+
+  try {
+    localStorage.setItem("videos", JSON.stringify(videos));
+    window.location.href = "feed.html";
+  } catch(e){
+    showError("Storage full! Try uploading smaller video.");
   }
 });
 </script>
