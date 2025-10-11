@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Video - ZAPFIX</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #E0F3FF;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #0078D7;
+      margin-bottom: 20px;
+    }
+
+    .upload-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="file"] {
+      margin: 10px 0;
+    }
+
+    button {
+      background-color: #0078D7;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Upload Video</h1>
+  <div class="upload-box">
+    <input type="text" id="title" placeholder="Enter video title" required>
+    <textarea id="description" placeholder="Enter video description" required></textarea>
+    <label>Thumbnail:</label>
+    <input type="file" id="thumbnail" accept="image/*" required>
+    <label>Video:</label>
+    <input type="file" id="video" accept="video/*" required>
+    <button id="uploadBtn">Upload</button>
+  </div>
+
+  <script>
+    document.getElementById("uploadBtn").addEventListener("click", function() {
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const thumbnailFile = document.getElementById("thumbnail").files[0];
+      const videoFile = document.getElementById("video").files[0];
+
+      if (!title || !description || !thumbnailFile || !videoFile) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      const readerThumb = new FileReader();
+      const readerVideo = new FileReader();
+
+      readerThumb.onload = function(e) {
+        const thumbnailURL = e.target.result;
+
+        readerVideo.onload = function(ev) {
+          const videoURL = ev.target.result;
+
+          const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+          videos.push({
+            id: Date.now(),
+            title,
+            description,
+            thumbnail: thumbnailURL,
+            video: videoURL,
+            likes: 0,
+            comments: []
+          });
+
+          localStorage.setItem("videos", JSON.stringify(videos));
+          alert("Video uploaded successfully!");
+          window.location.href = "feed.html";
+        };
+
+        readerVideo.readAsDataURL(videoFile);
+      };
+
+      readerThumb.readAsDataURL(thumbnailFile);
+    });
+  </script>
+</body>
+</html>
