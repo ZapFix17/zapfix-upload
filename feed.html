@@ -1,139 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZAPFIX Feed</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #E0F3FF; /* updated background */
-    }
-
-    /* Header */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
-      padding: 10px 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    header h1 {
-      color: black; /* ZAPFIX color updated */
-      margin: 0;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    header input[type="text"] {
-      padding: 8px 12px;
-      width: 300px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-    }
-
-    /* Grid container */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-
-    /* Video card */
-    .video-card {
-      background: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .video-card:hover {
-      transform: scale(1.03);
-    }
-
-    .video-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-    }
-
-    .video-info {
-      padding: 10px;
-    }
-
-    .video-info h3 {
-      font-size: 16px;
-      margin: 0;
-      color: #333;
-      line-height: 1.3em;
-      height: 2.6em; /* 2 lines max */
-      overflow: hidden;
-    }
-
-    .video-info p {
-      margin: 5px 0 0 0;
-      font-size: 14px;
-      color: #666;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feed - ZAPFIX</title>
+<style>
+body {
+  background: #E0F3FF;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  gap: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+header h1 {
+  margin: 0;
+  color: black;
+  font-size: 24px;
+  font-weight: bold;
+}
+header input[type=text] {
+  margin-left: auto;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+#uploadBtn {
+  background: #0078D7;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#uploadBtn:hover{
+  background: #005fa3;
+}
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+  gap: 20px;
+  padding: 20px;
+}
+.video-card {
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.video-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.video-card h3 {
+  font-size: 16px;
+  margin: 8px 0 0 0;
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>ZAPFIX</h1>
-    <input type="text" id="searchInput" placeholder="Search videos...">
-  </header>
+<header>
+  <button id="uploadBtn">➕ Upload Video</button>
+  <h1>ZAPFIX</h1>
+  <input type="text" id="searchInput" placeholder="Search videos...">
+</header>
 
-  <div class="grid" id="feedContainer"></div>
+<div class="video-grid" id="videoGrid"></div>
 
-  <script>
-    const feedContainer = document.getElementById("feedContainer");
-    const searchInput = document.getElementById("searchInput");
+<script>
+const uploadBtn = document.getElementById("uploadBtn");
+uploadBtn.onclick = ()=>{ window.location.href="upload.html"; }
 
-    let videos = JSON.parse(localStorage.getItem("searchResults") || localStorage.getItem("videos") || "[]");
-    localStorage.removeItem("searchResults"); // clear temporary search results
+let videos = JSON.parse(localStorage.getItem("videos") || "[]");
+const videoGrid = document.getElementById("videoGrid");
 
-    function renderVideos(list) {
-      feedContainer.innerHTML = "";
-      if (list.length === 0) {
-        feedContainer.innerHTML = "<p style='text-align:center;'>No videos found.</p>";
-        return;
-      }
-      list.forEach(video => {
-        const card = document.createElement("div");
-        card.className = "video-card";
-        card.innerHTML = `
-          <img src="${video.thumbnail}" alt="Thumbnail">
-          <div class="video-info">
-            <h3>${video.title}</h3>
-            <p>${video.description.substring(0, 50)}...</p>
-          </div>
-        `;
-        card.onclick = () => {
-          localStorage.setItem("selectedVideo", JSON.stringify(video));
-          window.location.href = "watch.html";
-        };
-        feedContainer.appendChild(card);
-      });
-    }
+function renderVideos(list){
+  videoGrid.innerHTML="";
+  if(list.length===0){
+    videoGrid.innerHTML="<p style='text-align:center; grid-column:1/-1;'>No videos uploaded yet.</p>";
+    return;
+  }
+  list.forEach(video=>{
+    const card = document.createElement("div");
+    card.className="video-card";
+    card.innerHTML=`<img src="${video.thumbnail}" alt="Thumbnail"><h3>${video.title}</h3>`;
+    card.onclick = ()=> {
+      localStorage.setItem("selectedVideo", JSON.stringify(video));
+      window.location.href="watch.html?id="+video.id;
+    };
+    videoGrid.appendChild(card);
+  });
+}
 
-    renderVideos(videos);
+// Initial render
+renderVideos(videos);
 
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
-      renderVideos(filtered);
-    });
-  </script>
+// Search functionality
+document.getElementById("searchInput").addEventListener("keypress", function(e){
+  if(e.key==="Enter"){
+    const query = this.value.toLowerCase();
+    const filtered = videos.filter(v=>v.title.toLowerCase().includes(query));
+    renderVideos(filtered);
+  }
+});
+</script>
 
 </body>
 </html>
