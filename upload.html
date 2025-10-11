@@ -1,130 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload Video</title>
-  <style>
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background-color: #E0F3FF;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
-      color: #333;
-    }
-
-    h1 {
-      margin-bottom: 30px;
-      font-size: 32px;
-      color: #0077cc;
-    }
-
-    .upload-box {
-      background: #fff;
-      padding: 25px 35px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      width: 400px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    label {
-      font-weight: 600;
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-    }
-
-    textarea {
-      resize: vertical;
-      height: 80px;
-    }
-
-    .preview {
-      width: 300px;
-      height: 190px;
-      background-color: #f0f0f0;
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #888;
-      font-size: 14px;
-      margin: 5px 0;
-      overflow: hidden;
-    }
-
-    .preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-
-    input[type="file"] {
-      display: none;
-    }
-
-    .file-label {
-      display: inline-block;
-      background-color: #0077cc;
-      color: white;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      text-align: center;
-      transition: background 0.3s;
-    }
-
-    .file-label:hover {
-      background-color: #005fa3;
-    }
-
-    button {
-      padding: 12px;
-      background-color: #0077cc;
-      color: #fff;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #005fa3;
-    }
-
-    /* Error popup */
-    #errorPopup {
-      display:none;
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #FF4D4D;
-      color: white;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 999;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Video</title>
+<style>
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #E0F3FF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  color: #333;
+}
+h1 {
+  margin-bottom: 30px;
+  font-size: 32px;
+  color: #0077cc;
+}
+.upload-box {
+  background: #fff;
+  padding: 25px 35px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+label { font-weight: 600; margin-bottom: 6px; display: block; }
+input[type="text"], textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+textarea { resize: vertical; height: 80px; }
+.preview {
+  width: 300px; height: 190px; background-color: #f0f0f0;
+  border: 2px dashed #ccc; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #888; font-size: 14px; margin: 5px 0; overflow: hidden;
+}
+.preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+input[type="file"] { display: none; }
+.file-label {
+  display: inline-block;
+  background-color: #0077cc;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.3s;
+}
+.file-label:hover { background-color: #005fa3; }
+button {
+  padding: 12px;
+  background-color: #0077cc;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+button:hover { background-color: #005fa3; }
+/* Error popup */
+#errorPopup {
+  display:none;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #FF4D4D;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 999;
+  font-weight: bold;
+}
+</style>
 </head>
 <body>
 
@@ -178,7 +139,7 @@ document.getElementById("thumbnail").addEventListener("change", function(e){
   }
 });
 
-// Video preview
+// Video preview placeholder
 document.getElementById("video").addEventListener("change", function(e){
   const file = e.target.files[0];
   if(file){
