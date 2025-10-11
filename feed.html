@@ -5,79 +5,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feed - ZAPFIX</title>
 <style>
-  body {
-    background: #E0F3FF;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-
-  header {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    background: #fff;
-    padding: 10px 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    gap: 15px;
-  }
-
-  header h1 {
-    color: black;
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
-  }
-
-  header input[type="text"] {
-    padding: 8px 12px;
-    width: 300px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    margin-left: auto;
-  }
-
-  #uploadBtn {
-    background-color: #0078D7;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  #uploadBtn:hover { background-color: #005fa3; }
-
-  .video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
-    gap: 20px;
-    padding: 20px;
-  }
-
-  .video-card {
-    background: white;
-    border-radius: 12px;
-    padding: 10px;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-
-  .video-card img {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-
-  .video-card h3 {
-    font-size: 16px;
-    margin: 8px 0 0 0;
-  }
+body {
+  background: #E0F3FF;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+header h1 {
+  margin: 0;
+  color: black;
+  font-size: 24px;
+  font-weight: bold;
+}
+header input[type=text] {
+  margin-left: auto;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+#uploadBtn {
+  background: #0078D7;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#uploadBtn:hover{
+  background: #005fa3;
+}
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+  gap: 20px;
+  padding: 20px;
+}
+.video-card {
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.video-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.video-card h3 {
+  font-size: 16px;
+  margin: 8px 0 0 0;
+}
 </style>
 </head>
 <body>
@@ -91,48 +83,42 @@
 <div class="video-grid" id="videoGrid"></div>
 
 <script>
-  const uploadBtn = document.getElementById("uploadBtn");
-  uploadBtn.onclick = () => { window.location.href = "upload.html"; }
+const uploadBtn = document.getElementById("uploadBtn");
+uploadBtn.onclick = ()=>{ window.location.href="upload.html"; }
 
-  let videos = JSON.parse(localStorage.getItem("videos") || "[]");
+let videos = JSON.parse(localStorage.getItem("videos") || "[]");
+const videoGrid = document.getElementById("videoGrid");
 
-  // Check if there are search results
-  const searchResults = JSON.parse(localStorage.getItem("searchResults") || "null");
-  if(searchResults) {
-    videos = searchResults;
-    localStorage.removeItem("searchResults");
+function renderVideos(list){
+  videoGrid.innerHTML="";
+  if(list.length===0){
+    videoGrid.innerHTML="<p style='text-align:center; grid-column:1/-1;'>No videos uploaded yet.</p>";
+    return;
   }
-
-  const videoGrid = document.getElementById("videoGrid");
-  if(videos.length === 0){
-    videoGrid.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>No videos uploaded yet.</p>";
-  } else {
-    videos.forEach(video => {
-      const card = document.createElement("div");
-      card.className = "video-card";
-      card.innerHTML = `
-        <img src="${video.thumbnail}" alt="Thumbnail">
-        <h3>${video.title}</h3>
-      `;
-      card.onclick = () => {
-        localStorage.setItem("selectedVideo", JSON.stringify(video));
-        window.location.href = `watch.html?id=${video.id}`;
-      };
-      videoGrid.appendChild(card);
-    });
-  }
-
-  // Search bar functionality
-  const searchInput = document.getElementById("searchInput");
-  searchInput.addEventListener("keypress", function(e){
-    if(e.key === "Enter"){
-      const query = searchInput.value.toLowerCase();
-      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-      const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
-      localStorage.setItem("searchResults", JSON.stringify(filtered));
-      window.location.href = "feed.html";
-    }
+  list.forEach(video=>{
+    const card = document.createElement("div");
+    card.className="video-card";
+    card.innerHTML=`<img src="${video.thumbnail}" alt="Thumbnail"><h3>${video.title}</h3>`;
+    card.onclick = ()=> {
+      localStorage.setItem("selectedVideo", JSON.stringify(video));
+      window.location.href="watch.html?id="+video.id;
+    };
+    videoGrid.appendChild(card);
   });
+}
+
+// Initial render
+renderVideos(videos);
+
+// Search functionality
+document.getElementById("searchInput").addEventListener("keypress", function(e){
+  if(e.key==="Enter"){
+    const query = this.value.toLowerCase();
+    const filtered = videos.filter(v=>v.title.toLowerCase().includes(query));
+    renderVideos(filtered);
+  }
+});
 </script>
+
 </body>
 </html>
