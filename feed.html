@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
+      background-color: #E0F3FF; /* updated background */
     }
 
     /* Header */
@@ -25,7 +25,7 @@
     }
 
     header h1 {
-      color: #FF0000; /* YouTube-style red */
+      color: black; /* ZAPFIX color updated */
       margin: 0;
       font-size: 24px;
       font-weight: bold;
@@ -99,7 +99,6 @@
     const feedContainer = document.getElementById("feedContainer");
     const searchInput = document.getElementById("searchInput");
 
-    // Use searchResults if coming from watch.html search
     let videos = JSON.parse(localStorage.getItem("searchResults") || localStorage.getItem("videos") || "[]");
     localStorage.removeItem("searchResults"); // clear temporary search results
 
@@ -127,10 +126,8 @@
       });
     }
 
-    // Initial render
     renderVideos(videos);
 
-    // Filter videos on typing
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.toLowerCase();
       const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
