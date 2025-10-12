@@ -1,144 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Watch - ZAPFIX</title>
-<style>
-body{ margin:0; font-family: Arial; background:#E0F3FF; }
-header{ display:flex; align-items:center; padding:10px 20px; background:white; box-shadow:0 2px 6px rgba(0,0,0,0.1); gap:15px; position:sticky; top:0; z-index:100; }
-header h1{ color:black; margin:0; font-size:24px; font-weight:bold; }
-header input[type=text]{ margin-left:auto; padding:8px 12px; border-radius:20px; border:1px solid #ccc; width:300px; }
-main{ display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
-.video-container{ flex:3; min-width:300px; }
-.video-container video{ width:100%; border-radius:12px; }
-.video-info{ margin-top:10px; }
-#likeBtn, #shareBtn{ margin-right:10px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
-#likeBtn{ background:#0078D7; color:white; }
-#shareBtn{ background:#00cc77; color:white; }
-.comment-section{ margin-top:15px; }
-.comment-section input{ width:48%; margin-right:4%; padding:6px 10px; border-radius:6px; border:1px solid #ccc; }
-.comment-section button{ padding:6px 12px; border:none; border-radius:6px; background:#0078D7; color:white; cursor:pointer; font-weight:bold; }
-.comment-list{ margin-top:10px; }
-.comment-item{ background:white; padding:6px 10px; border-radius:6px; margin-bottom:6px; }
-.suggestions{ flex:1; min-width:200px; display:flex; flex-direction:column; gap:10px; }
-.suggestion-card{ background:white; border-radius:12px; padding:10px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.1); display:flex; flex-direction:column; }
-.suggestion-card img{ width:100%; border-radius:8px; object-fit:cover; }
-.suggestion-card h4{ font-size:14px; margin:6px 0 0 0; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Video</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #E0F3FF;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    h1 {
+      color: #0077cc;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .video-box {
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .info {
+      margin-top: 20px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background-color: #0077cc;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s;
+      margin-bottom: 20px;
+    }
+
+    .back-btn:hover {
+      background-color: #005fa3;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 40px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>ZAPFIX</h1>
-  <input type="text" id="searchInput" placeholder="Search videos...">
-</header>
-
-<main>
-  <div class="video-container">
-    <video id="videoPlayer" controls></video>
-    <div class="video-info">
-      <h2 id="videoTitle"></h2>
-      <p id="videoDescription"></p>
-      <button id="likeBtn">Like (0)</button>
-      <button id="shareBtn">Share</button>
-    </div>
-    <div class="comment-section">
-      <input type="text" id="commentName" placeholder="Your name">
-      <input type="text" id="commentText" placeholder="Your comment">
-      <button id="addCommentBtn">Add Comment</button>
-      <div class="comment-list" id="commentList"></div>
+  <a href="feed.html" class="back-btn">⬅ Back to Feed</a>
+  <div class="container" id="watchContainer">
+    <h1>Watch Video</h1>
+    <div class="video-box" id="videoBox"></div>
+    <div class="info">
+      <div class="title" id="videoTitle"></div>
+      <div class="description" id="videoDescription"></div>
     </div>
   </div>
-  <div class="suggestions" id="suggestions"></div>
-</main>
 
-<script>
-let videos = JSON.parse(localStorage.getItem("videos") || "[]");
-let params = new URLSearchParams(window.location.search);
-let videoId = parseInt(params.get("id")) || null;
-let selectedVideo = videos.find(v=>v.id===videoId);
+  <div class="error" id="errorMsg" style="display:none;">⚠ Video not found!</div>
 
-if(!selectedVideo){
-  alert("Video not found!");
-  window.location.href="feed.html";
-}
+  <script>
+    const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+    const currentId = localStorage.getItem("currentVideoId");
+    const currentVideo = videos.find(v => v.id == currentId);
 
-// Elements
-const videoPlayer = document.getElementById("videoPlayer");
-const titleEl = document.getElementById("videoTitle");
-const descEl = document.getElementById("videoDescription");
-const likeBtn = document.getElementById("likeBtn");
-const shareBtn = document.getElementById("shareBtn");
-const commentList = document.getElementById("commentList");
-const addCommentBtn = document.getElementById("addCommentBtn");
-
-// Set video info
-videoPlayer.src = selectedVideo.video;
-titleEl.textContent = selectedVideo.title;
-descEl.textContent = selectedVideo.description;
-likeBtn.textContent = `Like (${selectedVideo.likes})`;
-
-// Like button functionality
-likeBtn.onclick = ()=>{
-  selectedVideo.likes++;
-  likeBtn.textContent = `Like (${selectedVideo.likes})`;
-  let index = videos.findIndex(v=>v.id===videoId);
-  videos[index]=selectedVideo;
-  localStorage.setItem("videos", JSON.stringify(videos));
-}
-
-// Share button
-shareBtn.onclick = ()=>{
-  const link = window.location.href;
-  prompt("Copy this link:", link);
-}
-
-// Render comments
-function renderComments(){
-  commentList.innerHTML="";
-  selectedVideo.comments.forEach(c=>{
-    const div = document.createElement("div");
-    div.className="comment-item";
-    div.innerHTML=`<strong>${c.name}</strong>: ${c.text}`;
-    commentList.appendChild(div);
-  });
-}
-renderComments();
-
-// Add comment
-addCommentBtn.onclick=()=>{
-  const name = document.getElementById("commentName").value.trim();
-  const text = document.getElementById("commentText").value.trim();
-  if(!name || !text){ alert("Enter both name and comment!"); return; }
-  selectedVideo.comments.push({name,text});
-  let index = videos.findIndex(v=>v.id===videoId);
-  videos[index]=selectedVideo;
-  localStorage.setItem("videos", JSON.stringify(videos));
-  document.getElementById("commentName").value="";
-  document.getElementById("commentText").value="";
-  renderComments();
-}
-
-// Suggestions
-const suggestionsEl = document.getElementById("suggestions");
-videos.filter(v=>v.id!==videoId).forEach(v=>{
-  const div = document.createElement("div");
-  div.className="suggestion-card";
-  div.innerHTML=`<img src="${v.thumbnail}"><h4>${v.title}</h4>`;
-  div.onclick=()=>{ window.location.href="watch.html?id="+v.id; }
-  suggestionsEl.appendChild(div);
-});
-
-// Search in watch page
-document.getElementById("searchInput").addEventListener("keypress", function(e){
-  if(e.key==="Enter"){
-    const query=this.value.toLowerCase();
-    const filtered = videos.filter(v=>v.title.toLowerCase().includes(query));
-    localStorage.setItem("searchResults", JSON.stringify(filtered));
-    window.location.href="feed.html";
-  }
-});
-</script>
+    if (!currentVideo) {
+      document.getElementById("watchContainer").style.display = "none";
+      document.getElementById("errorMsg").style.display = "block";
+    } else {
+      document.getElementById("videoBox").innerHTML = `
+        <video controls>
+          <source src="${currentVideo.video}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      `;
+      document.getElementById("videoTitle").textContent = currentVideo.title;
+      document.getElementById("videoDescription").textContent = currentVideo.description;
+    }
+  </script>
 </body>
 </html>
