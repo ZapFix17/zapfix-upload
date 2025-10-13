@@ -1,123 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watch Video</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch Video - ZapFix</title>
   <style>
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background-color: #E0F3FF;
-      color: #333;
+      font-family: 'Poppins', sans-serif;
+      background: #E0F3FF;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 25px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0077ff;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      background: #0077ff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #005cd1;
+    }
+
+    main {
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-
-    .container {
-      background: #fff;
-      width: 90%;
-      max-width: 800px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      padding: 20px;
-    }
-
-    h1 {
-      color: #0077cc;
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .video-box {
-      width: 100%;
-      border-radius: 10px;
-      overflow: hidden;
-      background: #000;
+      padding: 30px;
+      gap: 20px;
     }
 
     video {
       width: 100%;
-      height: auto;
-      border-radius: 10px;
-      display: block;
+      max-width: 800px;
+      border-radius: 16px;
+      background: #000;
     }
 
     .info {
-      margin-top: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
     }
 
-    .title {
-      font-size: 22px;
-      font-weight: 600;
-      color: #222;
+    h2 {
+      color: #0077ff;
+      margin: 0 0 8px 0;
+    }
+
+    p {
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .like-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      color: #0077ff;
+      user-select: none;
+    }
+
+    .like-btn span {
+      font-size: 15px;
+      color: #333;
+    }
+
+    .share-btn {
+      background: #00b894;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .share-drawer {
+      display: none;
+      background: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+
+    .share-drawer button {
+      background: #0077ff;
+      color: white;
+      border: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .comments {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .comments h3 {
+      color: #0077ff;
       margin-bottom: 10px;
     }
 
-    .description {
-      font-size: 15px;
-      line-height: 1.5;
-      color: #555;
+    .comments input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      font-size: 14px;
+      outline: none;
     }
 
-    .back-btn {
-      display: inline-block;
-      background-color: #0077cc;
+    .comments button {
+      background: #0077ff;
       color: white;
-      padding: 10px 18px;
+      border: none;
+      padding: 8px 14px;
       border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s;
-      margin-bottom: 20px;
+      cursor: pointer;
     }
 
-    .back-btn:hover {
-      background-color: #005fa3;
+    .comment-list {
+      margin-top: 15px;
     }
 
-    .error {
-      color: red;
-      text-align: center;
-      margin-top: 40px;
-      font-weight: 600;
-      font-size: 18px;
+    .comment {
+      background: #f2f4f8;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 15px;
+      }
+      video {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
+    <button class="back-btn" onclick="window.location.href='feed.html'">← Back</button>
+  </header>
 
-  <a href="feed.html" class="back-btn">⬅ Back to Feed</a>
-  <div class="container" id="watchContainer">
-    <h1>Watch Video</h1>
-    <div class="video-box" id="videoBox"></div>
+  <main>
+    <video id="videoPlayer" controls></video>
+
     <div class="info">
-      <div class="title" id="videoTitle"></div>
-      <div class="description" id="videoDescription"></div>
-    </div>
-  </div>
+      <h2 id="videoTitle">Video Title</h2>
+      <p id="videoDescription">Video description...</p>
 
-  <div class="error" id="errorMsg" style="display:none;">⚠ Video not found!</div>
+      <div class="actions">
+        <div class="like-btn" id="likeBtn">👍 <span id="likeCount">0</span></div>
+        <button class="share-btn" onclick="toggleShare()">Share 📤</button>
+      </div>
+
+      <div class="share-drawer" id="shareDrawer">
+        <button onclick="copyLink()">Copy Link</button>
+        <button onclick="shareWhatsApp()">Share on WhatsApp</button>
+      </div>
+    </div>
+
+    <div class="comments">
+      <h3>Comments 💬</h3>
+      <input type="text" id="commentInput" placeholder="Write a comment...">
+      <button onclick="addComment()">Post</button>
+      <div class="comment-list" id="commentList"></div>
+    </div>
+  </main>
 
   <script>
-    const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-    const currentId = localStorage.getItem("currentVideoId");
-    const currentVideo = videos.find(v => v.id == currentId);
+    const videoData = JSON.parse(localStorage.getItem("selectedVideo") || "{}");
+    const videoPlayer = document.getElementById("videoPlayer");
+    const videoTitle = document.getElementById("videoTitle");
+    const videoDescription = document.getElementById("videoDescription");
+    const likeBtn = document.getElementById("likeBtn");
+    const likeCount = document.getElementById("likeCount");
+    const commentList = document.getElementById("commentList");
 
-    if (!currentVideo) {
-      document.getElementById("watchContainer").style.display = "none";
-      document.getElementById("errorMsg").style.display = "block";
-    } else {
-      document.getElementById("videoBox").innerHTML = `
-        <video controls>
-          <source src="${currentVideo.video}" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      `;
-      document.getElementById("videoTitle").textContent = currentVideo.title;
-      document.getElementById("videoDescription").textContent = currentVideo.description;
+    // Load video
+    if (videoData.video) {
+      videoPlayer.src = videoData.video;
+      videoTitle.textContent = videoData.title;
+      videoDescription.textContent = videoData.description;
+    }
+
+    // 👍 Like System (Permanent)
+    const likeKey = `likes_${videoData.video}`;
+    let likes = parseInt(localStorage.getItem(likeKey) || "0");
+    likeCount.textContent = likes;
+
+    likeBtn.addEventListener("click", () => {
+      likes++;
+      likeCount.textContent = likes;
+      localStorage.setItem(likeKey, likes);
+    });
+
+    // 💬 Comment System (Permanent)
+    const commentKey = `comments_${videoData.video}`;
+    let comments = JSON.parse(localStorage.getItem(commentKey) || "[]");
+    displayComments();
+
+    function addComment() {
+      const input = document.getElementById("commentInput");
+      const text = input.value.trim();
+      if (!text) return;
+      comments.push(text);
+      localStorage.setItem(commentKey, JSON.stringify(comments));
+      input.value = "";
+      displayComments();
+    }
+
+    function displayComments() {
+      commentList.innerHTML = "";
+      comments.forEach(c => {
+        const div = document.createElement("div");
+        div.classList.add("comment");
+        div.textContent = c;
+        commentList.appendChild(div);
+      });
+    }
+
+    // 📤 Share Drawer
+    function toggleShare() {
+      const drawer = document.getElementById("shareDrawer");
+      drawer.style.display = drawer.style.display === "block" ? "none" : "block";
+    }
+
+    function copyLink() {
+      const link = window.location.href;
+      navigator.clipboard.writeText(link);
+      alert("Link copied to clipboard!");
+    }
+
+    function shareWhatsApp() {
+      const link = window.location.href;
+      window.open(`https://api.whatsapp.com/send?text=Check this ZapFix video: ${link}`);
     }
   </script>
 </body>
