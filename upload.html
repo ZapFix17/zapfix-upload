@@ -1,194 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload Video</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Video - ZapFix</title>
   <style>
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background-color: #E0F3FF;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
+      font-family: 'Poppins', sans-serif;
+      background: #E0F3FF;
+      margin: 0;
+      padding: 0;
       color: #333;
     }
-    h1 {
-      margin-bottom: 30px;
-      font-size: 32px;
-      color: #0077cc;
-    }
-    .upload-box {
-      background: #fff;
-      padding: 25px 35px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      width: 400px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    label { font-weight: 600; margin-bottom: 6px; display: block; }
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-    }
-    textarea { resize: vertical; height: 80px; }
-    .preview {
-      width: 300px;
-      height: 190px;
-      background-color: #f0f0f0;
-      border: 2px dashed #ccc;
-      border-radius: 10px;
+
+    header {
+      background: white;
+      padding: 15px 25px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: #888;
-      font-size: 14px;
-      margin: 5px 0;
-      overflow: hidden;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .preview img, .preview video {
-      width: 100%; height: 100%; object-fit: cover; border-radius: 10px;
-    }
-    input[type="file"] { display: none; }
-    .file-label {
-      display: inline-block;
-      background-color: #0077cc;
-      color: white;
-      padding: 10px 18px;
-      border-radius: 8px;
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0077ff;
       cursor: pointer;
-      font-weight: 600;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
       text-align: center;
-      transition: background 0.3s;
+      color: #0077ff;
+      margin-bottom: 20px;
     }
-    .file-label:hover { background-color: #005fa3; }
-    button {
-      padding: 12px;
-      background-color: #0077cc;
-      color: #fff;
+
+    label {
+      display: block;
+      margin-top: 15px;
       font-weight: 600;
-      border: none;
-      border-radius: 8px;
+      color: #444;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1.5px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+      resize: none;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-label {
+      background: #0077ff;
+      color: white;
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin-top: 8px;
       cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .file-label:hover {
+      background: #005cd1;
+    }
+
+    .preview {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .preview img,
+    .preview video {
+      width: 300px;
+      height: 190px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid #ccc;
+    }
+
+    button.upload-btn {
+      width: 100%;
+      background: #00b894;
+      color: white;
+      padding: 12px;
       font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 25px;
+      cursor: pointer;
       transition: background 0.3s;
     }
-    button:hover { background-color: #005fa3; }
-    #errorPopup {
-      display:none;
-      position: fixed;
-      top: 20px; left: 50%;
-      transform: translateX(-50%);
-      background-color: #FF4D4D;
+
+    button.upload-btn:hover {
+      background: #01996b;
+    }
+
+    .back-btn {
+      background: #0077ff;
       color: white;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 999;
-      font-weight: bold;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .status {
+      text-align: center;
+      margin-top: 15px;
+      color: #0077ff;
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+      .preview img, .preview video {
+        width: 100%;
+        height: auto;
+      }
     }
   </style>
 </head>
 <body>
-<h1>Upload Video</h1>
+  <header>
+    <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
+    <button class="back-btn" onclick="window.location.href='feed.html'">← Back</button>
+  </header>
 
-<div class="upload-box">
-  <label>Title</label>
-  <input type="text" id="title" placeholder="Enter video title">
+  <div class="container">
+    <h2>Upload Video</h2>
 
-  <label>Description</label>
-  <textarea id="description" placeholder="Enter video description..."></textarea>
+    <label>Title</label>
+    <input type="text" id="title" placeholder="Enter video title">
 
-  <label>Thumbnail (300x190)</label>
-  <div class="preview" id="thumbPreview">No thumbnail selected</div>
-  <input type="file" id="thumbnail" accept="image/*">
-  <label class="file-label" for="thumbnail">Choose Thumbnail</label>
+    <label>Description</label>
+    <textarea id="description" rows="3" placeholder="Enter video description"></textarea>
 
-  <label>Video (300x190)</label>
-  <div class="preview" id="videoPreview">No video selected</div>
-  <input type="file" id="video" accept="video/*">
-  <label class="file-label" for="video">Choose Video</label>
+    <label>Thumbnail</label>
+    <label class="file-label" for="thumbnail">Choose Thumbnail</label>
+    <input type="file" id="thumbnail" accept="image/*">
+    <div class="preview" id="thumbPreview"></div>
 
-  <button id="uploadBtn">Upload</button>
-</div>
+    <label>Video</label>
+    <label class="file-label" for="video">Choose Video</label>
+    <input type="file" id="video" accept="video/*">
+    <div class="preview" id="videoPreview"></div>
 
-<div id="errorPopup">Error message</div>
+    <button class="upload-btn" id="uploadBtn">Upload</button>
+    <div class="status" id="status"></div>
+  </div>
 
-<script>
-const CLOUD_NAME = "dvj0h4vkw";
-const UPLOAD_PRESET = "ZapFix_upload";
+  <script>
+    // 🟦 Cloudinary Configuration
+    const cloudName = "dvj0h4vkw"; // ⚠️ Replace this
+    const uploadPreset = "ZapFix_upload"; // ⚠️ Replace this
 
-let thumbnailFile = null;
-let videoFile = null;
+    const thumbInput = document.getElementById("thumbnail");
+    const videoInput = document.getElementById("video");
+    const thumbPreview = document.getElementById("thumbPreview");
+    const videoPreview = document.getElementById("videoPreview");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const status = document.getElementById("status");
 
-document.getElementById("thumbnail").addEventListener("change", e => {
-  const file = e.target.files[0];
-  thumbnailFile = file;
-  const reader = new FileReader();
-  reader.onload = ev => document.getElementById("thumbPreview").innerHTML = `<img src="${ev.target.result}" />`;
-  reader.readAsDataURL(file);
-});
-
-document.getElementById("video").addEventListener("change", e => {
-  const file = e.target.files[0];
-  videoFile = file;
-  document.getElementById("videoPreview").innerHTML = `<div>Video selected: ${file.name}</div>`;
-});
-
-function showError(msg){
-  const popup = document.getElementById("errorPopup");
-  popup.textContent = msg;
-  popup.style.display = "block";
-  setTimeout(()=> popup.style.display="none", 3000);
-}
-
-async function uploadToCloudinary(file, resourceType){
-  const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`;
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", UPLOAD_PRESET);
-  const res = await fetch(url, { method: "POST", body: formData });
-  const data = await res.json();
-  if (!data.secure_url) throw new Error("Upload failed");
-  return data.secure_url;
-}
-
-document.getElementById("uploadBtn").addEventListener("click", async () => {
-  const title = document.getElementById("title").value.trim();
-  const description = document.getElementById("description").value.trim();
-  if(!title) return showError("Please enter a video title!");
-  if(!description) return showError("Please enter a description!");
-  if(!thumbnailFile) return showError("Please select a thumbnail!");
-  if(!videoFile) return showError("Please select a video!");
-
-  try {
-    const thumbUrl = await uploadToCloudinary(thumbnailFile, "image");
-    const videoUrl = await uploadToCloudinary(videoFile, "video");
-
-    const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-    videos.push({
-      id: Date.now(),
-      title,
-      description,
-      thumbnail: thumbUrl,
-      video: videoUrl,
-      likes: 0,
-      comments: []
+    // Thumbnail preview
+    thumbInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          thumbPreview.innerHTML = `<img src="${reader.result}" alt="Thumbnail Preview">`;
+        };
+        reader.readAsDataURL(file);
+      }
     });
 
-    localStorage.setItem("videos", JSON.stringify(videos));
-    window.location.href = "feed.html";
-  } catch (err) {
-    console.error(err);
-    showError("Upload failed. Try again!");
-  }
-});
-</script>
+    // Video preview
+    videoInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          videoPreview.innerHTML = `<video src="${reader.result}" controls></video>`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Upload process
+    uploadBtn.addEventListener("click", async () => {
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const thumbFile = thumbInput.files[0];
+      const videoFile = videoInput.files[0];
+
+      if (!title || !description || !thumbFile || !videoFile) {
+        alert("Please fill all fields and select files!");
+        return;
+      }
+
+      status.textContent = "Uploading thumbnail...";
+
+      // Upload thumbnail
+      const thumbData = new FormData();
+      thumbData.append("file", thumbFile);
+      thumbData.append("upload_preset", uploadPreset);
+
+      const thumbRes = await fetch(`https://api.cloudinary.com/v1_1/${dvj0h4vkw}/image/upload`, {
+        method: "POST",
+        body: thumbData
+      }).then(r => r.json());
+
+      const thumbUrl = thumbRes.secure_url;
+      status.textContent = "Uploading video... (this may take a while)";
+
+      // Upload video
+      const videoData = new FormData();
+      videoData.append("file", videoFile);
+      videoData.append("upload_preset", uploadPreset);
+
+      const videoRes = await fetch(`https://api.cloudinary.com/v1_1/${dvj0h4vkw}/video/upload`, {
+        method: "POST",
+        body: videoData
+      }).then(r => r.json());
+
+      const videoUrl = videoRes.secure_url;
+
+      // Save data to localStorage (acts like feed database)
+      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+      videos.push({ title, description, thumbnail: thumbUrl, video: videoUrl });
+      localStorage.setItem("videos", JSON.stringify(videos));
+
+      status.textContent = "✅ Upload complete! Redirecting...";
+      setTimeout(() => {
+        window.location.href = "feed.html";
+      }, 1000);
+    });
+  </script>
 </body>
 </html>
