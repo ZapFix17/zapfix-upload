@@ -1,134 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Feed</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZapFix - My Videos</title>
   <style>
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: #E0F3FF;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       color: #333;
     }
 
-    h1 {
-      text-align: center;
-      color: #0077cc;
-      margin-bottom: 25px;
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: 15px 25px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    .feed-container {
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0077ff;
+      cursor: pointer;
+    }
+
+    .upload-btn {
+      background: #0077ff;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.2s ease;
+    }
+
+    .upload-btn:hover {
+      background: #005cd1;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #f2f4f8;
+      padding: 6px 10px;
+      border-radius: 8px;
+      gap: 8px;
+    }
+
+    .search-bar i {
+      color: #0077ff;
+    }
+
+    .search-bar input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 14px;
+      width: 180px;
+    }
+
+    main {
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0077ff;
+      margin-bottom: 25px;
+      font-size: 22px;
+    }
+
+    .video-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 20px;
-      justify-content: center;
     }
 
     .video-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      background: white;
+      border-radius: 16px;
       overflow: hidden;
-      transition: transform 0.2s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
       cursor: pointer;
     }
 
     .video-card:hover {
-      transform: scale(1.03);
+      transform: translateY(-4px);
     }
 
     .thumbnail {
       width: 100%;
-      height: 190px;
+      height: 140px;
       object-fit: cover;
-      display: block;
+      background: #ddd;
     }
 
     .video-info {
-      padding: 15px;
+      padding: 12px;
     }
 
     .video-title {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
       color: #222;
     }
 
-    .video-description {
-      font-size: 14px;
-      color: #555;
-      line-height: 1.4;
-    }
-
-    .no-videos {
-      text-align: center;
+    .video-meta {
+      font-size: 13px;
       color: #666;
-      font-size: 18px;
-      margin-top: 50px;
     }
 
-    .upload-btn {
-      display: inline-block;
-      background-color: #0077cc;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s;
-      margin: 0 auto 30px;
-      display: block;
-      width: fit-content;
-    }
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
 
-    .upload-btn:hover {
-      background-color: #005fa3;
+      main {
+        padding: 15px;
+      }
+
+      .search-bar input {
+        width: 120px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Feed</h1>
-  <a href="upload.html" class="upload-btn">Upload New Video</a>
+  <header>
+    <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
+    <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
+    <div class="search-bar">
+      <i>🔍</i>
+      <input type="text" id="searchInput" placeholder="Search videos...">
+    </div>
+  </header>
 
-  <div class="feed-container" id="feedContainer"></div>
-
-  <div class="no-videos" id="noVideos">No videos uploaded yet 😢</div>
+  <main>
+    <h2>My Uploaded Videos</h2>
+    <div class="video-grid" id="videoGrid">
+      <!-- Videos load here -->
+    </div>
+  </main>
 
   <script>
-    const feedContainer = document.getElementById("feedContainer");
-    const noVideos = document.getElementById("noVideos");
+    const videoGrid = document.getElementById("videoGrid");
+    const searchInput = document.getElementById("searchInput");
 
-    const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+    function loadVideos() {
+      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+      displayVideos(videos);
+    }
 
-    if (videos.length === 0) {
-      noVideos.style.display = "block";
-    } else {
-      noVideos.style.display = "none";
+    function displayVideos(videos) {
+      videoGrid.innerHTML = "";
+      if (videos.length === 0) {
+        videoGrid.innerHTML = "<p style='text-align:center; color:#777;'>No videos uploaded yet.</p>";
+        return;
+      }
 
-      videos.reverse().forEach(video => {
+      videos.forEach((vid, i) => {
         const card = document.createElement("div");
         card.classList.add("video-card");
-
         card.innerHTML = `
-          <img src="${video.thumbnail}" class="thumbnail" alt="Thumbnail">
+          <img src="${vid.thumbnail}" alt="Thumbnail" class="thumbnail">
           <div class="video-info">
-            <div class="video-title">${video.title}</div>
-            <div class="video-description">${video.description}</div>
+            <div class="video-title">${vid.title}</div>
+            <div class="video-meta">ZapFix Channel • ${new Date().toLocaleDateString()}</div>
           </div>
         `;
-
-        // Click → go to watch.html with video id
         card.addEventListener("click", () => {
-          localStorage.setItem("currentVideoId", video.id);
+          localStorage.setItem("selectedVideo", JSON.stringify(vid));
           window.location.href = "watch.html";
         });
-
-        feedContainer.appendChild(card);
+        videoGrid.appendChild(card);
       });
     }
+
+    // 🔍 Search filter
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+      const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
+      displayVideos(filtered);
+    });
+
+    loadVideos();
   </script>
 </body>
 </html>
