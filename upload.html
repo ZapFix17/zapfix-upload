@@ -54,8 +54,8 @@
 </div>
 
 <script>
-const cloudName = "dvj0h4vkw";
-const uploadPreset = "ZapFix_upload";
+const cloudName = "dvj0h4vkw";       // Cloudinary Cloud Name
+const uploadPreset = "ZapFix_upload"; // Unsigned preset
 
 const thumbInput = document.getElementById("thumbnail");
 const videoInput = document.getElementById("video");
@@ -101,15 +101,23 @@ uploadBtn.addEventListener("click", async ()=>{
     const thumbData=new FormData();
     thumbData.append("file",thumbFile);
     thumbData.append("upload_preset",uploadPreset);
-    const thumbRes=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {method:"POST", body:thumbData}).then(r=>r.json());
+
+    const thumbRes=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method:"POST", body:thumbData
+    }).then(r=>r.json());
+
     if(thumbRes.error) throw thumbRes.error;
     const thumbUrl=thumbRes.secure_url;
-    
+
     status.textContent="Thumbnail uploaded! Uploading video...";
     const videoData=new FormData();
     videoData.append("file",videoFile);
     videoData.append("upload_preset",uploadPreset);
-    const videoRes=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {method:"POST", body:videoData}).then(r=>r.json());
+
+    const videoRes=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
+      method:"POST", body:videoData
+    }).then(r=>r.json());
+
     if(videoRes.error) throw videoRes.error;
     const videoUrl=videoRes.secure_url;
 
