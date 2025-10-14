@@ -5,288 +5,300 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Watch Video - ZapFix</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #E0F3FF;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif; }
+    body { background: #e8f4ff; color: #222; }
 
+    /* 🔹 Top Navigation Bar */
     header {
-      background: #fff;
+      background: linear-gradient(90deg, #66b3ff, #0099ff);
+      color: white;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 15px 25px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      align-items: center;
+      padding: 12px 20px;
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 100;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    .logo { font-size: 24px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; }
+    .upload-btn {
+      background: white; color: #007bff; border: none;
+      padding: 8px 18px; border-radius: 12px;
+      cursor: pointer; font-weight: 600;
+      transition: 0.3s;
+    }
+    .upload-btn:hover { background: #f0f0f0; }
+    .search-bar input {
+      padding: 8px 12px; border-radius: 10px; border: none;
+      outline: none; width: 160px; font-size: 14px;
     }
 
-    .logo {
-      font-size: 26px;
-      font-weight: 700;
-      color: #0077ff;
-      cursor: pointer;
+    /* 🔹 Main Layout */
+    .main-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+      padding: 25px;
     }
 
-    .back-btn {
-      background: #0077ff;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.2s;
+    /* 🎬 Left Section (Main Video) */
+    .video-section {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      padding: 18px;
     }
-
-    .back-btn:hover {
-      background: #005cd1;
-    }
-
-    main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px;
-      gap: 20px;
-    }
-
     video {
       width: 100%;
-      max-width: 800px;
-      border-radius: 16px;
-      background: #000;
+      border-radius: 12px;
+      background: black;
+    }
+    .video-details {
+      margin-top: 12px;
+    }
+    .video-details h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #007bff;
     }
 
-    .info {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 800px;
-    }
-
-    h2 {
-      color: #0077ff;
-      margin: 0 0 8px 0;
-    }
-
-    p {
-      color: #444;
-      line-height: 1.5;
-    }
-
-    .actions {
+    /* 👍 Like and Link Buttons */
+    .video-actions {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: 15px;
+      gap: 15px;
+      margin-bottom: 15px;
     }
-
     .like-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      font-size: 18px;
-      color: #0077ff;
-      user-select: none;
+      display: flex; align-items: center;
+      gap: 6px; background: #e7f1ff;
+      border: none; padding: 8px 14px;
+      border-radius: 12px; cursor: pointer;
+      font-weight: 500; color: #007bff;
+      transition: 0.2s;
     }
+    .like-btn:hover { background: #d5e9ff; }
+    .like-btn span { font-size: 16px; }
 
-    .like-btn span {
-      font-size: 15px;
+    .link-btn {
+      background: #00b894; color: white;
+      border: none; padding: 8px 14px;
+      border-radius: 12px; cursor: pointer;
+      font-weight: 500; transition: 0.3s;
+    }
+    .link-btn:hover { background: #01996b; }
+
+    /* 💬 Comment Section */
+    .comment-box {
+      margin-top: 20px;
+      background: #d9edff;
+      padding: 18px;
+      border-radius: 15px;
+    }
+    .comment-box h3 { color: #007bff; margin-bottom: 10px; }
+    .comment-input {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 15px;
+    }
+    .comment-input input, .comment-input textarea {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1.5px solid #ccc;
+      outline: none;
+      resize: none;
+      font-size: 14px;
+    }
+    .comment-input button {
+      align-self: flex-end;
+      background: #007bff; color: white;
+      border: none; padding: 8px 16px;
+      border-radius: 10px; cursor: pointer;
+      transition: 0.3s;
+    }
+    .comment-input button:hover { background: #005fd1; }
+
+    .comments-list { margin-top: 10px; }
+    .comment-item {
+      background: white;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .comment-item strong { color: #007bff; }
+
+    /* 📺 Right Section (Suggestions) */
+    .suggestions {
+      background: linear-gradient(180deg, #e8f5ff, #cde7ff);
+      border-radius: 18px;
+      padding: 18px;
+      height: fit-content;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+    .suggestions h3 {
+      color: #007bff;
+      margin-bottom: 12px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .suggestion-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      background: white;
+      padding: 8px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+    .suggestion-item:hover { background: #f0f8ff; }
+    .suggestion-item img {
+      width: 100px;
+      height: 65px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .suggestion-item .info {
+      display: flex; flex-direction: column;
+      justify-content: center;
+    }
+    .suggestion-item .info p {
+      font-size: 13px;
+      font-weight: 500;
       color: #333;
     }
 
-    .share-btn {
-      background: #00b894;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .share-drawer {
-      display: none;
-      background: white;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 10px;
-    }
-
-    .share-drawer button {
-      background: #0077ff;
-      color: white;
-      border: none;
-      padding: 8px 10px;
-      border-radius: 8px;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-
-    .comments {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 800px;
-    }
-
-    .comments h3 {
-      color: #0077ff;
-      margin-bottom: 10px;
-    }
-
-    .comments input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .comments button {
-      background: #0077ff;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .comment-list {
-      margin-top: 15px;
-    }
-
-    .comment {
-      background: #f2f4f8;
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 600px) {
-      main {
-        padding: 15px;
+    @media (max-width: 850px) {
+      .main-container {
+        grid-template-columns: 1fr;
       }
-      video {
-        width: 100%;
+      .suggestions {
+        max-height: none;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
-    <button class="back-btn" onclick="window.location.href='feed.html'">← Back</button>
-  </header>
 
-  <main>
-    <video id="videoPlayer" controls></video>
+<header>
+  <div class="logo" onclick="window.location.href='feed.html'">ZapFix</div>
+  <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
+  <div class="search-bar">
+    <input type="text" placeholder="Search..." id="searchInput">
+  </div>
+</header>
 
-    <div class="info">
-      <h2 id="videoTitle">Video Title</h2>
-      <p id="videoDescription">Video description...</p>
-
-      <div class="actions">
-        <div class="like-btn" id="likeBtn">👍 <span id="likeCount">0</span></div>
-        <button class="share-btn" onclick="toggleShare()">Share 📤</button>
+<div class="main-container">
+  <!-- 🎬 Left Section -->
+  <div class="video-section">
+    <video id="mainVideo" controls></video>
+    <div class="video-details">
+      <h2 id="videoTitle"></h2>
+      <div class="video-actions">
+        <button class="like-btn" id="likeBtn">👍 <span id="likeCount">0</span></button>
+        <button class="link-btn" id="shareBtn">🔗 Copy Video Link</button>
       </div>
-
-      <div class="share-drawer" id="shareDrawer">
-        <button onclick="copyLink()">Copy Link</button>
-        <button onclick="shareWhatsApp()">Share on WhatsApp</button>
-      </div>
+      <p id="videoDesc"></p>
     </div>
 
-    <div class="comments">
-      <h3>Comments 💬</h3>
-      <input type="text" id="commentInput" placeholder="Write a comment...">
-      <button onclick="addComment()">Post</button>
-      <div class="comment-list" id="commentList"></div>
+    <!-- 💬 Comments -->
+    <div class="comment-box">
+      <h3>Comments</h3>
+      <div class="comment-input">
+        <input type="text" id="commentName" placeholder="Your name">
+        <textarea id="commentText" rows="2" placeholder="Write a comment..."></textarea>
+        <button id="publishBtn">Publish</button>
+      </div>
+      <div class="comments-list" id="commentsList"></div>
     </div>
-  </main>
+  </div>
 
-  <script>
-    const videoData = JSON.parse(localStorage.getItem("selectedVideo") || "{}");
-    const videoPlayer = document.getElementById("videoPlayer");
-    const videoTitle = document.getElementById("videoTitle");
-    const videoDescription = document.getElementById("videoDescription");
-    const likeBtn = document.getElementById("likeBtn");
-    const likeCount = document.getElementById("likeCount");
-    const commentList = document.getElementById("commentList");
+  <!-- 📺 Right Section -->
+  <div class="suggestions">
+    <h3>Next Video Suggestions</h3>
+    <div id="suggestionList"></div>
+  </div>
+</div>
 
-    // Load video
-    if (videoData.video) {
-      videoPlayer.src = videoData.video;
-      videoTitle.textContent = videoData.title;
-      videoDescription.textContent = videoData.description;
-    }
+<script>
+const videoData = JSON.parse(localStorage.getItem("selectedVideo") || "{}");
+const videos = JSON.parse(localStorage.getItem("videos") || "[]");
 
-    // 👍 Like System (Permanent)
-    const likeKey = `likes_${videoData.video}`;
-    let likes = parseInt(localStorage.getItem(likeKey) || "0");
-    likeCount.textContent = likes;
+// 🟦 Display current video
+const mainVideo = document.getElementById("mainVideo");
+const videoTitle = document.getElementById("videoTitle");
+const videoDesc = document.getElementById("videoDesc");
 
-    likeBtn.addEventListener("click", () => {
-      likes++;
-      likeCount.textContent = likes;
-      localStorage.setItem(likeKey, likes);
-    });
+if(videoData.video){
+  mainVideo.src = videoData.video;
+  videoTitle.textContent = videoData.title;
+  videoDesc.textContent = videoData.description;
+}
 
-    // 💬 Comment System (Permanent)
-    const commentKey = `comments_${videoData.video}`;
-    let comments = JSON.parse(localStorage.getItem(commentKey) || "[]");
-    displayComments();
+// 🟦 Like Button (Permanent)
+const likeBtn = document.getElementById("likeBtn");
+const likeCount = document.getElementById("likeCount");
+const likeKey = `likes_${videoData.video}`;
+let likes = parseInt(localStorage.getItem(likeKey) || "0");
+likeCount.textContent = likes;
 
-    function addComment() {
-      const input = document.getElementById("commentInput");
-      const text = input.value.trim();
-      if (!text) return;
-      comments.push(text);
-      localStorage.setItem(commentKey, JSON.stringify(comments));
-      input.value = "";
-      displayComments();
-    }
+likeBtn.addEventListener("click", () => {
+  likes++;
+  localStorage.setItem(likeKey, likes);
+  likeCount.textContent = likes;
+});
 
-    function displayComments() {
-      commentList.innerHTML = "";
-      comments.forEach(c => {
-        const div = document.createElement("div");
-        div.classList.add("comment");
-        div.textContent = c;
-        commentList.appendChild(div);
-      });
-    }
+// 🟦 Share Button
+document.getElementById("shareBtn").addEventListener("click", () => {
+  navigator.clipboard.writeText(window.location.href);
+  alert("✅ Video link copied!");
+});
 
-    // 📤 Share Drawer
-    function toggleShare() {
-      const drawer = document.getElementById("shareDrawer");
-      drawer.style.display = drawer.style.display === "block" ? "none" : "block";
-    }
+// 🟦 Comments (Permanent)
+const publishBtn = document.getElementById("publishBtn");
+const commentsList = document.getElementById("commentsList");
+const commentKey = `comments_${videoData.video}`;
+let comments = JSON.parse(localStorage.getItem(commentKey) || "[]");
 
-    function copyLink() {
-      const link = window.location.href;
-      navigator.clipboard.writeText(link);
-      alert("Link copied to clipboard!");
-    }
+function renderComments(){
+  commentsList.innerHTML = comments.map(c =>
+    `<div class="comment-item"><strong>${c.name}</strong><p>${c.text}</p></div>`
+  ).join("");
+}
+renderComments();
 
-    function shareWhatsApp() {
-      const link = window.location.href;
-      window.open(`https://api.whatsapp.com/send?text=Check this ZapFix video: ${link}`);
-    }
-  </script>
+publishBtn.addEventListener("click", ()=>{
+  const name = document.getElementById("commentName").value.trim();
+  const text = document.getElementById("commentText").value.trim();
+  if(!name || !text) return alert("Please enter name and comment!");
+  comments.push({name, text});
+  localStorage.setItem(commentKey, JSON.stringify(comments));
+  renderComments();
+  document.getElementById("commentName").value="";
+  document.getElementById("commentText").value="";
+});
+
+// 🟦 Suggestions (Exclude current video)
+const suggestionList = document.getElementById("suggestionList");
+const suggestions = videos.filter(v => v.video !== videoData.video);
+suggestionList.innerHTML = suggestions.map(v => `
+  <div class="suggestion-item" onclick='viewVideo(${JSON.stringify(v).replace(/"/g, "&quot;")})'>
+    <img src="${v.thumbnail}" alt="thumb">
+    <div class="info"><p>${v.title}</p></div>
+  </div>
+`).join("");
+
+function viewVideo(v){
+  localStorage.setItem("selectedVideo", JSON.stringify(v));
+  window.location.href = "watch.html";
+}
+</script>
+
 </body>
 </html>
