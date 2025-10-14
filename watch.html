@@ -94,7 +94,11 @@
     }
 
     .video-title {
-      font-size: 20px;
+      <div class="video-actions">
+  <button id="likeBtn">👍 Like</button>
+  <span id="likeCount">0</span>
+</div>
+font-size: 20px;
       font-weight: 600;
       margin: 15px 0;
     }
@@ -245,7 +249,7 @@
 
     <!-- 🔹 Right: Suggestions -->
     <div class="right-section">
-      <h3>NEXT VIDEO SUGGESTIONS</h3>
+      <h3> SUGGESTIONS</h3>
       <div id="suggestionsList"></div>
     </div>
   </div>
@@ -304,4 +308,5 @@
   </script>
 </body>
 </html>
+
 
