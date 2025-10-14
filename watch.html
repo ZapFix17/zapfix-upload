@@ -1,309 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Watch Video - ZapFix</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZapFix - My Videos</title>
   <style>
-    * {
-      box-sizing: border-box;
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #E0F3FF;
       margin: 0;
       padding: 0;
-      font-family: "Poppins", sans-serif;
+      color: #333;
     }
 
-    body {
-      background: #e8f4ff;
-      color: #222;
-    }
-
-    /* 🔹 Top Navigation Bar */
     header {
-      background: linear-gradient(90deg, #66b3ff, #0099ff);
-      color: white;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
+      justify-content: space-between;
+      background: #fff;
+      padding: 15px 25px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       position: sticky;
       top: 0;
-      z-index: 100;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      z-index: 10;
     }
 
     .logo {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 700;
+      color: #0077ff;
       cursor: pointer;
-      letter-spacing: 0.5px;
-    }
-
-    /* 🔹 Right Side (Search + Upload) */
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .search-bar {
-      padding: 8px 12px;
-      border-radius: 25px;
-      border: none;
-      outline: none;
-      width: 220px;
-      font-size: 14px;
     }
 
     .upload-btn {
-      background: white;
-      color: #0099ff;
+      background: #0077ff;
+      color: white;
       border: none;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      font-size: 15px;
+      transition: background 0.2s ease;
     }
 
     .upload-btn:hover {
-      background: #e0f3ff;
-      transform: scale(1.05);
+      background: #005cd1;
     }
 
-    /* 🔹 Page Layout */
-    .container {
+    .search-bar {
       display: flex;
-      padding: 20px;
+      align-items: center;
+      background: #f2f4f8;
+      padding: 6px 10px;
+      border-radius: 8px;
+      gap: 8px;
+    }
+
+    .search-bar i {
+      color: #0077ff;
+    }
+
+    .search-bar input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 14px;
+      width: 180px;
+    }
+
+    main {
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0077ff;
+      margin-bottom: 25px;
+      font-size: 22px;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 20px;
     }
 
-    /* 🔹 Left Section (Main Video Area) */
-    .left-section {
-      flex: 2;
+    .video-card {
       background: white;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+      cursor: pointer;
     }
 
-    .video-player {
+    .video-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .thumbnail {
       width: 100%;
-      height: 400px;
-      background: black;
-      border-radius: 12px;
+      height: 140px;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .video-info {
+      padding: 12px;
     }
 
     .video-title {
-    
-      font-size: 20px;
+      font-size: 15px;
       font-weight: 600;
-      margin: 15px 0;
+      margin-bottom: 5px;
+      color: #222;
     }
 
-    .video-actions {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+    .video-meta {
+      font-size: 13px;
+      color: #666;
     }
 
-    .action-btn {
-      background: #0099ff;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-
-    .action-btn:hover {
-      background: #007acc;
-    }
-
-    /* 🔹 Comments Section */
-    .comments-section {
-      background: #e0f3ff;
-      border-radius: 10px;
-      padding: 15px;
-    }
-
-    .comments-section h3 {
-      margin-bottom: 10px;
-    }
-
-    .comment-inputs {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .comment-inputs input, .comment-inputs textarea {
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      outline: none;
-      font-size: 14px;
-    }
-
-    .publish-btn {
-      background: #0099ff;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100px;
-    }
-
-    .comment-list {
-      margin-top: 10px;
-    }
-
-    .comment-item {
-      background: white;
-      border-radius: 8px;
-      padding: 8px;
-      margin-bottom: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    /* 🔹 Right Section (Next Video Suggestions) */
-    .right-section {
-      flex: 1;
-      background: linear-gradient(180deg, #cce7ff, #e8f4ff);
-      border-radius: 12px;
-      padding: 15px;
-      overflow-y: auto;
-      max-height: 600px;
-    }
-
-    .right-section h3 {
-      margin-bottom: 10px;
-    }
-
-    .suggestion {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      gap: 10px;
-      cursor: pointer;
-    }
-
-    .suggestion img {
-      width: 100px;
-      height: 70px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
-
-    .suggestion-title {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .container {
+    @media (max-width: 600px) {
+      header {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
       }
-      .right-section {
-        max-height: unset;
+
+      main {
+        padding: 15px;
+      }
+
+      .search-bar input {
+        width: 120px;
       }
     }
   </style>
 </head>
 <body>
- <header>
-  <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
-  <div class="search-bar">
-    <i>🔍</i>
-    <input type="text" id="searchInput" placeholder="Search videos...">
-  </div>
-  <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
-</header>
-  <div class="container">
-    <!-- 🔹 Left: Main Video -->
-    <div class="left-section">
-      <div class="video-player" id="mainVideo"></div>
-      <div class="video-title" id="videoTitle">Loading video...</div>
-      <div class="video-actions">
-        <button class="action-btn">👍 Like</button>
-        <button class="action-btn" id="copyLinkBtn">🔗 Copy Link</button>
-      </div>
-
-      <div class="comments-section">
-        <h3>Comments</h3>
-        <div class="comment-inputs">
-          <input type="text" id="nameInput" placeholder="Your name" />
-          <textarea id="commentInput" rows="3" placeholder="Write a comment..."></textarea>
-          <button class="publish-btn" onclick="addComment()">Publish</button>
-        </div>
-        <div class="comment-list" id="commentList"></div>
-      </div>
+  <header>
+    <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
+    <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
+    <div class="search-bar">
+      <i>🔍</i>
+      <input type="text" id="searchInput" placeholder="Search videos...">
     </div>
+  </header>
 
-    <!-- 🔹 Right: Suggestions -->
-    <div class="right-section">
-      <h3> SUGGESTIONS</h3>
-      <div id="suggestionsList"></div>
+  <main>
+    <h2>My Uploaded Videos</h2>
+    <div class="video-grid" id="videoGrid">
+      <!-- Videos load here -->
     </div>
-  </div>
+  </main>
 
   <script>
-    // Get video from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const title = urlParams.get("title");
-    const videoUrl = urlParams.get("video");
-    const thumbnail = urlParams.get("thumb");
+    const videoGrid = document.getElementById("videoGrid");
+    const searchInput = document.getElementById("searchInput");
 
-    // Display main video
-    const videoPlayer = document.getElementById("mainVideo");
-    videoPlayer.innerHTML = `
-      <video width="100%" height="100%" controls poster="${thumbnail}">
-        <source src="${videoUrl}" type="video/mp4">
-      </video>
-    `;
-    document.getElementById("videoTitle").innerText = title || "Untitled Video";
-
-    // Copy video link
-    document.getElementById("copyLinkBtn").onclick = () => {
-      navigator.clipboard.writeText(window.location.href);
-      alert("Video link copied!");
-    };
-
-    // Comments feature
-    function addComment() {
-      const name = document.getElementById("nameInput").value.trim();
-      const comment = document.getElementById("commentInput").value.trim();
-      if (!name || !comment) return alert("Please enter both name and comment.");
-      const commentList = document.getElementById("commentList");
-      const div = document.createElement("div");
-      div.className = "comment-item";
-      div.innerHTML = `<b>${name}</b><p>${comment}</p>`;
-      commentList.prepend(div);
-      document.getElementById("nameInput").value = "";
-      document.getElementById("commentInput").value = "";
+    function loadVideos() {
+      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+      displayVideos(videos);
     }
 
-    // Load suggestions from feed
-    const suggestionsList = document.getElementById("suggestionsList");
-    const storedVideos = JSON.parse(localStorage.getItem("videos")) || [];
-    storedVideos.forEach(v => {
-      const item = document.createElement("div");
-      item.className = "suggestion";
-      item.innerHTML = `
-        <img src="${v.thumbnail}" alt="">
-        <div class="suggestion-title">${v.title}</div>
-      `;
-      item.onclick = () => {
-        window.location.href = `watch.html?title=${encodeURIComponent(v.title)}&video=${encodeURIComponent(v.video)}&thumb=${encodeURIComponent(v.thumbnail)}`;
-      };
-      suggestionsList.appendChild(item);
+    function displayVideos(videos) {
+      videoGrid.innerHTML = "";
+      if (videos.length === 0) {
+        videoGrid.innerHTML = "<p style='text-align:center; color:#777;'>No videos uploaded yet.</p>";
+        return;
+      }
+
+      videos.forEach((vid, i) => {
+        const card = document.createElement("div");
+        card.classList.add("video-card");
+        card.innerHTML = `
+          <img src="${vid.thumbnail}" alt="Thumbnail" class="thumbnail">
+          <div class="video-info">
+            <div class="video-title">${vid.title}</div>
+            <div class="video-meta">ZapFix Channel • ${new Date().toLocaleDateString()}</div>
+          </div>
+        `;
+        card.addEventListener("click", () => {
+          localStorage.setItem("selectedVideo", JSON.stringify(vid));
+          window.location.href = "watch.html";
+        });
+        videoGrid.appendChild(card);
+      });
+    }
+
+    // 🔍 Search filter
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+      const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
+      displayVideos(filtered);
     });
+
+    loadVideos();
   </script>
 </body>
 </html>
-
-
