@@ -13,6 +13,7 @@
       color: #333;
     }
 
+    /* NAVBAR */
     header {
       display: flex;
       align-items: center;
@@ -30,6 +31,12 @@
       font-weight: 700;
       color: #0077ff;
       cursor: pointer;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
     .upload-btn {
@@ -68,136 +75,97 @@
       width: 180px;
     }
 
-    main {
-      padding: 30px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #0077ff;
-      margin-bottom: 25px;
-      font-size: 22px;
-    }
-
+    /* GRID LAYOUT */
     .video-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
       gap: 20px;
+      padding: 30px;
     }
 
     .video-card {
       background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
       cursor: pointer;
+      transition: transform 0.2s;
     }
 
     .video-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-3px);
     }
 
-    .thumbnail {
+    .video-card img {
       width: 100%;
-      height: 140px;
+      height: 120px;
       object-fit: cover;
-      background: #ddd;
+      border-radius: 8px;
     }
 
-    .video-info {
-      padding: 12px;
-    }
-
-    .video-title {
-      font-size: 15px;
+    .video-card p {
       font-weight: 600;
-      margin-bottom: 5px;
-      color: #222;
+      font-size: 14px;
+      margin-top: 8px;
+      color: #0077ff;
     }
 
-    .video-meta {
-      font-size: 13px;
-      color: #666;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-
-      main {
+    @media(max-width:600px){
+      .video-grid{
+        grid-template-columns: 1fr;
         padding: 15px;
-      }
-
-      .search-bar input {
-        width: 120px;
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- HEADER -->
   <header>
-    <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
-    <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
-    <div class="search-bar">
-      <i>🔍</i>
-      <input type="text" id="searchInput" placeholder="Search videos...">
+    <div class="logo">ZAPFIX</div>
+    <div class="nav-right">
+      <div class="search-bar">
+        <i>🔍</i>
+        <input type="text" id="searchInput" placeholder="Search videos...">
+      </div>
+      <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
     </div>
   </header>
 
-  <main>
-    <h2>My Uploaded Videos</h2>
-    <div class="video-grid" id="videoGrid">
-      <!-- Videos load here -->
-    </div>
-  </main>
+  <!-- VIDEO GRID -->
+  <div class="video-grid" id="videoGrid"></div>
 
   <script>
-    const videoGrid = document.getElementById("videoGrid");
-    const searchInput = document.getElementById("searchInput");
+    const videoGrid = document.getElementById('videoGrid');
+    let videos = JSON.parse(localStorage.getItem('videos') || '[]');
 
-    function loadVideos() {
-      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-      displayVideos(videos);
-    }
+    function renderVideos(filter = '') {
+      videoGrid.innerHTML = '';
+      const filteredVideos = videos.filter(v => v.title.toLowerCase().includes(filter.toLowerCase()));
 
-    function displayVideos(videos) {
-      videoGrid.innerHTML = "";
-      if (videos.length === 0) {
-        videoGrid.innerHTML = "<p style='text-align:center; color:#777;'>No videos uploaded yet.</p>";
-        return;
-      }
-
-      videos.forEach((vid, i) => {
-        const card = document.createElement("div");
-        card.classList.add("video-card");
+      filteredVideos.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
         card.innerHTML = `
-          <img src="${vid.thumbnail}" alt="Thumbnail" class="thumbnail">
-          <div class="video-info">
-            <div class="video-title">${vid.title}</div>
-            <div class="video-meta">ZapFix Channel • ${new Date().toLocaleDateString()}</div>
-          </div>
+          <img src="${v.thumbnail}" alt="thumbnail">
+          <p>${v.title}</p>
         `;
-        card.addEventListener("click", () => {
-          localStorage.setItem("selectedVideo", JSON.stringify(vid));
-          window.location.href = "watch.html";
+        card.addEventListener('click', ()=>{
+          localStorage.setItem('selectedVideo', JSON.stringify(v));
+          window.location.href = 'watch.html';
         });
         videoGrid.appendChild(card);
       });
     }
 
-    // 🔍 Search filter
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-      const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
-      displayVideos(filtered);
-    });
+    renderVideos();
 
-    loadVideos();
+    // SEARCH FUNCTIONALITY
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', ()=>{
+      renderVideos(searchInput.value);
+    });
   </script>
+
 </body>
 </html>
