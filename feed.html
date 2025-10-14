@@ -20,7 +20,7 @@
     justify-content: space-between; /* logo left, nav-right right */
     background: #fff;
     padding: 15px 25px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -78,7 +78,7 @@
   /* VIDEO GRID */
   .video-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+    grid-template-columns: repeat(4, 1fr); /* 4 per row */
     gap: 20px;
     padding: 30px;
   }
@@ -110,76 +110,80 @@
     color: #0077ff;
   }
 
+  /* RESPONSIVE */
+  @media(max-width:1200px){
+    .video-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media(max-width:900px){
+    .video-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
   @media(max-width:600px){
-    .video-grid{
-      grid-template-columns: 1fr;
-      padding: 15px;
-    }
-
-    .nav-right {
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-    }
-
-    .search-bar input {
-      width: 120px;
-    }
+    .video-grid { grid-template-columns: 1fr; padding: 15px; }
+    .nav-right { flex-direction: column; align-items: flex-end; gap: 8px; }
+    .search-bar input { width: 120px; }
   }
 </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
-    <div class="nav-right">
-      <div class="search-bar">
-        <i>🔍</i>
-        <input type="text" id="searchInput" placeholder="Search videos...">
-      </div>
-      <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
+<!-- HEADER -->
+<header>
+  <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
+  <div class="nav-right">
+    <div class="search-bar">
+      <i>🔍</i>
+      <input type="text" id="searchInput" placeholder="Search videos...">
     </div>
-  </header>
+    <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
+  </div>
+</header>
 
-  <!-- VIDEO GRID -->
-  <div class="video-grid" id="videoGrid"></div>
+<!-- VIDEO GRID -->
+<div class="video-grid" id="videoGrid"></div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
 
-      const videoGrid = document.getElementById('videoGrid');
-      let videos = JSON.parse(localStorage.getItem('videos') || '[]');
+  const videoGrid = document.getElementById('videoGrid');
+  let videos = JSON.parse(localStorage.getItem('videos') || '[]');
 
-      function renderVideos(filter = '') {
-        videoGrid.innerHTML = '';
-        const filteredVideos = videos.filter(v => v.title.toLowerCase().includes(filter.toLowerCase()));
+  function renderVideos(filter = '') {
+    videoGrid.innerHTML = '';
+    const filteredVideos = videos.filter(v => v.title.toLowerCase().includes(filter.toLowerCase()));
 
-        filteredVideos.forEach(v => {
-          const card = document.createElement('div');
-          card.className = 'video-card';
-          card.innerHTML = `
-            <img src="${v.thumbnail}" alt="thumbnail">
-            <p>${v.title}</p>
-          `;
-          card.addEventListener('click', ()=>{
-            localStorage.setItem('selectedVideo', JSON.stringify(v));
-            window.location.href = 'watch.html';
-          });
-          videoGrid.appendChild(card);
-        });
-      }
-
-      renderVideos();
-
-      // SEARCH FUNCTIONALITY
-      const searchInput = document.getElementById('searchInput');
-      searchInput.addEventListener('input', ()=>{
-        renderVideos(searchInput.value);
+    filteredVideos.forEach(v => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.innerHTML = `
+        <img src="${v.thumbnail}" alt="thumbnail">
+        <p>${v.title}</p>
+      `;
+      card.addEventListener('click', ()=>{
+        // Store the selected video for watch.html
+        const videoObj = {
+          title: v.title,
+          video: v.video,
+          thumbnail: v.thumbnail
+        };
+        localStorage.setItem('selectedVideo', JSON.stringify(videoObj));
+        window.location.href = 'watch.html';
       });
-
+      videoGrid.appendChild(card);
     });
-  </script>
+  }
+
+  renderVideos();
+
+  // SEARCH FUNCTIONALITY
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', ()=>{
+    renderVideos(searchInput.value);
+  });
+
+});
+</script>
 
 </body>
 </html>
