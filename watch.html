@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZapFix - My Videos</title>
+  <title>ZapFix - Watch Video</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -13,6 +13,7 @@
       color: #333;
     }
 
+    /* NAVBAR */
     header {
       display: flex;
       align-items: center;
@@ -30,6 +31,12 @@
       font-weight: 700;
       color: #0077ff;
       cursor: pointer;
+    }
+
+    header > div:last-child {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
     .upload-btn {
@@ -68,136 +75,289 @@
       width: 180px;
     }
 
+    /* MAIN LAYOUT */
     main {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
       padding: 30px;
     }
 
-    h2 {
-      text-align: center;
-      color: #0077ff;
-      margin-bottom: 25px;
-      font-size: 22px;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 20px;
-    }
-
-    .video-card {
+    .video-section {
       background: white;
       border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
-      cursor: pointer;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .video-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .thumbnail {
+    video {
       width: 100%;
-      height: 140px;
-      object-fit: cover;
-      background: #ddd;
-    }
-
-    .video-info {
-      padding: 12px;
+      border-radius: 12px;
+      background: #000;
+      max-height: 480px;
     }
 
     .video-title {
-      font-size: 15px;
+      font-size: 20px;
       font-weight: 600;
-      margin-bottom: 5px;
       color: #222;
+      margin-top: 10px;
     }
 
-    .video-meta {
-      font-size: 13px;
-      color: #666;
+    /* LIKE BUTTON */
+    .video-actions {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
+    #likeBtn {
+      background: #0077ff;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.2s ease;
+    }
 
+    #likeBtn:hover {
+      background: #005cd1;
+    }
+
+    #likeCount {
+      font-weight: 600;
+      color: #333;
+    }
+
+    /* COMMENT SECTION */
+    .comment-section {
+      margin-top: 25px;
+      background: #E7F3FF;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    .comment-section h3 {
+      color: #0077ff;
+      margin-bottom: 10px;
+    }
+
+    .comment-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .comment-box input,
+    .comment-box textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .comment-box button {
+      background: #0077ff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100px;
+      align-self: flex-end;
+      transition: background 0.2s;
+    }
+
+    .comment-box button:hover {
+      background: #005cd1;
+    }
+
+    .comments-list {
+      margin-top: 15px;
+    }
+
+    .comment {
+      background: white;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-top: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    /* NEXT VIDEOS */
+    .next-section {
+      background: white;
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      height: fit-content;
+    }
+
+    .next-title {
+      font-weight: 600;
+      color: #0077ff;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .next-video {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .next-video img {
+      width: 100px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .next-video span {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 900px) {
       main {
-        padding: 15px;
-      }
-
-      .search-bar input {
-        width: 120px;
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- HEADER -->
   <header>
     <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
-    <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
-    <div class="search-bar">
-      <i>🔍</i>
-      <input type="text" id="searchInput" placeholder="Search videos...">
+    <div>
+      <div class="search-bar">
+        <i>🔍</i>
+        <input type="text" id="searchInput" placeholder="Search videos...">
+      </div>
+      <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
     </div>
   </header>
 
+  <!-- MAIN -->
   <main>
-    <h2>My Uploaded Videos</h2>
-    <div class="video-grid" id="videoGrid">
-      <!-- Videos load here -->
-    </div>
+    <!-- LEFT: MAIN VIDEO AREA -->
+    <section class="video-section">
+      <video id="videoPlayer" controls></video>
+      <div class="video-title" id="videoTitle">Video Title</div>
+
+      <div class="video-actions">
+        <button id="likeBtn">👍 Like</button>
+        <span id="likeCount">0</span>
+      </div>
+
+      <!-- COMMENTS -->
+      <div class="comment-section">
+        <h3>Comments</h3>
+        <div class="comment-box">
+          <input type="text" id="userName" placeholder="Your name">
+          <textarea id="userComment" placeholder="Add a comment..." rows="3"></textarea>
+          <button id="postComment">Post</button>
+        </div>
+        <div class="comments-list" id="commentsList"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: NEXT VIDEOS -->
+    <aside class="next-section">
+      <div class="next-title">Next Video Suggestions</div>
+      <div id="nextVideos"></div>
+    </aside>
   </main>
 
   <script>
-    const videoGrid = document.getElementById("videoGrid");
-    const searchInput = document.getElementById("searchInput");
+    const video = JSON.parse(localStorage.getItem("selectedVideo") || "{}");
+    const player = document.getElementById("videoPlayer");
+    const title = document.getElementById("videoTitle");
 
-    function loadVideos() {
-      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-      displayVideos(videos);
+    // Set video and title
+    if (video && video.videoUrl) {
+      player.src = video.videoUrl;
+      title.textContent = video.title;
     }
 
-    function displayVideos(videos) {
-      videoGrid.innerHTML = "";
-      if (videos.length === 0) {
-        videoGrid.innerHTML = "<p style='text-align:center; color:#777;'>No videos uploaded yet.</p>";
-        return;
-      }
+    /* ========================
+       LIKE BUTTON SYSTEM
+    ======================== */
+    const likeBtn = document.getElementById("likeBtn");
+    const likeCount = document.getElementById("likeCount");
+    const likeKey = `likes_${video.title}`;
 
-      videos.forEach((vid, i) => {
-        const card = document.createElement("div");
-        card.classList.add("video-card");
-        card.innerHTML = `
-          <img src="${vid.thumbnail}" alt="Thumbnail" class="thumbnail">
-          <div class="video-info">
-            <div class="video-title">${vid.title}</div>
-            <div class="video-meta">ZapFix Channel • ${new Date().toLocaleDateString()}</div>
-          </div>
-        `;
-        card.addEventListener("click", () => {
-          localStorage.setItem("selectedVideo", JSON.stringify(vid));
-          window.location.href = "watch.html";
-        });
-        videoGrid.appendChild(card);
+    let likes = parseInt(localStorage.getItem(likeKey) || "0");
+    likeCount.textContent = likes;
+
+    likeBtn.addEventListener("click", () => {
+      likes++;
+      likeCount.textContent = likes;
+      localStorage.setItem(likeKey, likes);
+    });
+
+    /* ========================
+       COMMENT SYSTEM
+    ======================== */
+    const nameInput = document.getElementById("userName");
+    const commentInput = document.getElementById("userComment");
+    const postBtn = document.getElementById("postComment");
+    const commentsList = document.getElementById("commentsList");
+
+    const commentKey = `comments_${video.title}`;
+    let comments = JSON.parse(localStorage.getItem(commentKey) || "[]");
+
+    function renderComments() {
+      commentsList.innerHTML = "";
+      comments.forEach(c => {
+        const div = document.createElement("div");
+        div.classList.add("comment");
+        div.innerHTML = `<strong>${c.name}</strong><p>${c.text}</p>`;
+        commentsList.appendChild(div);
       });
     }
 
-    // 🔍 Search filter
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-      const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
-      displayVideos(filtered);
+    renderComments();
+
+    postBtn.addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      const text = commentInput.value.trim();
+      if (!name || !text) return alert("Please enter your name and comment!");
+      comments.push({ name, text });
+      localStorage.setItem(commentKey, JSON.stringify(comments));
+      renderComments();
+      nameInput.value = "";
+      commentInput.value = "";
     });
 
-    loadVideos();
+    /* ========================
+       NEXT VIDEO SUGGESTIONS
+    ======================== */
+    const nextVideosContainer = document.getElementById("nextVideos");
+    const allVideos = JSON.parse(localStorage.getItem("videos") || "[]");
+    const filtered = allVideos.filter(v => v.title !== video.title);
+
+    filtered.forEach(v => {
+      const div = document.createElement("div");
+      div.classList.add("next-video");
+      div.innerHTML = `
+        <img src="${v.thumbnail}" alt="thumb">
+        <span>${v.title}</span>
+      `;
+      div.addEventListener("click", () => {
+        localStorage.setItem("selectedVideo", JSON.stringify(v));
+        window.location.reload();
+      });
+      nextVideosContainer.appendChild(div);
+    });
   </script>
 </body>
 </html>
