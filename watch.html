@@ -5,8 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Watch Video - ZapFix</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif; }
-    body { background: #e8f4ff; color: #222; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #e8f4ff;
+      color: #222;
+    }
 
     /* 🔹 Top Navigation Bar */
     header {
@@ -21,284 +30,277 @@
       z-index: 100;
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
-    .logo { font-size: 24px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; }
-    .upload-btn {
-      background: white; color: #007bff; border: none;
-      padding: 8px 18px; border-radius: 12px;
-      cursor: pointer; font-weight: 600;
-      transition: 0.3s;
-    }
-    .upload-btn:hover { background: #f0f0f0; }
-    .search-bar input {
-      padding: 8px 12px; border-radius: 10px; border: none;
-      outline: none; width: 160px; font-size: 14px;
-    }
 
-    /* 🔹 Main Layout */
-    .main-container {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 25px;
-      padding: 25px;
-    }
-
-    /* 🎬 Left Section (Main Video) */
-    .video-section {
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-      padding: 18px;
-    }
-    video {
-      width: 100%;
-      border-radius: 12px;
-      background: black;
-    }
-    .video-details {
-      margin-top: 12px;
-    }
-    .video-details h2 {
-      font-size: 20px;
+    .logo {
+      font-size: 24px;
       font-weight: 700;
-      margin-bottom: 10px;
-      color: #007bff;
+      cursor: pointer;
+      letter-spacing: 0.5px;
     }
 
-    /* 👍 Like and Link Buttons */
-    .video-actions {
+    /* 🔹 Right Side (Search + Upload) */
+    .nav-right {
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
+      gap: 10px;
     }
-    .like-btn {
-      display: flex; align-items: center;
-      gap: 6px; background: #e7f1ff;
-      border: none; padding: 8px 14px;
-      border-radius: 12px; cursor: pointer;
-      font-weight: 500; color: #007bff;
-      transition: 0.2s;
-    }
-    .like-btn:hover { background: #d5e9ff; }
-    .like-btn span { font-size: 16px; }
 
-    .link-btn {
-      background: #00b894; color: white;
-      border: none; padding: 8px 14px;
-      border-radius: 12px; cursor: pointer;
-      font-weight: 500; transition: 0.3s;
-    }
-    .link-btn:hover { background: #01996b; }
-
-    /* 💬 Comment Section */
-    .comment-box {
-      margin-top: 20px;
-      background: #d9edff;
-      padding: 18px;
-      border-radius: 15px;
-    }
-    .comment-box h3 { color: #007bff; margin-bottom: 10px; }
-    .comment-input {
-      display: flex; flex-direction: column; gap: 8px;
-      margin-bottom: 15px;
-    }
-    .comment-input input, .comment-input textarea {
-      padding: 10px;
-      border-radius: 10px;
-      border: 1.5px solid #ccc;
+    .search-bar {
+      padding: 8px 12px;
+      border-radius: 25px;
+      border: none;
       outline: none;
-      resize: none;
+      width: 220px;
       font-size: 14px;
     }
-    .comment-input button {
-      align-self: flex-end;
-      background: #007bff; color: white;
-      border: none; padding: 8px 16px;
-      border-radius: 10px; cursor: pointer;
+
+    .upload-btn {
+      background: white;
+      color: #0099ff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
       transition: 0.3s;
     }
-    .comment-input button:hover { background: #005fd1; }
 
-    .comments-list { margin-top: 10px; }
-    .comment-item {
+    .upload-btn:hover {
+      background: #e0f3ff;
+      transform: scale(1.05);
+    }
+
+    /* 🔹 Page Layout */
+    .container {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    /* 🔹 Left Section (Main Video Area) */
+    .left-section {
+      flex: 2;
       background: white;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
-    .comment-item strong { color: #007bff; }
 
-    /* 📺 Right Section (Suggestions) */
-    .suggestions {
-      background: linear-gradient(180deg, #e8f5ff, #cde7ff);
-      border-radius: 18px;
-      padding: 18px;
-      height: fit-content;
-      max-height: calc(100vh - 120px);
-      overflow-y: auto;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    .video-player {
+      width: 100%;
+      height: 400px;
+      background: black;
+      border-radius: 12px;
     }
-    .suggestions h3 {
-      color: #007bff;
-      margin-bottom: 12px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 700;
+
+    .video-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 15px 0;
     }
-    .suggestion-item {
+
+    .video-actions {
       display: flex;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .action-btn {
+      background: #0099ff;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 14px;
       cursor: pointer;
-      background: white;
-      padding: 8px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 14px;
       transition: 0.3s;
     }
-    .suggestion-item:hover { background: #f0f8ff; }
-    .suggestion-item img {
+
+    .action-btn:hover {
+      background: #007acc;
+    }
+
+    /* 🔹 Comments Section */
+    .comments-section {
+      background: #e0f3ff;
+      border-radius: 10px;
+      padding: 15px;
+    }
+
+    .comments-section h3 {
+      margin-bottom: 10px;
+    }
+
+    .comment-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .comment-inputs input, .comment-inputs textarea {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .publish-btn {
+      background: #0099ff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
       width: 100px;
-      height: 65px;
+    }
+
+    .comment-list {
+      margin-top: 10px;
+    }
+
+    .comment-item {
+      background: white;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* 🔹 Right Section (Next Video Suggestions) */
+    .right-section {
+      flex: 1;
+      background: linear-gradient(180deg, #cce7ff, #e8f4ff);
+      border-radius: 12px;
+      padding: 15px;
+      overflow-y: auto;
+      max-height: 600px;
+    }
+
+    .right-section h3 {
+      margin-bottom: 10px;
+    }
+
+    .suggestion {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .suggestion img {
+      width: 100px;
+      height: 70px;
       border-radius: 8px;
       object-fit: cover;
     }
-    .suggestion-item .info {
-      display: flex; flex-direction: column;
-      justify-content: center;
-    }
-    .suggestion-item .info p {
-      font-size: 13px;
+
+    .suggestion-title {
+      font-size: 14px;
       font-weight: 500;
-      color: #333;
     }
 
-    @media (max-width: 850px) {
-      .main-container {
-        grid-template-columns: 1fr;
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
       }
-      .suggestions {
-        max-height: none;
+      .right-section {
+        max-height: unset;
       }
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="logo" onclick="window.location.href='feed.html'">ZapFix</div>
+    <div class="nav-right">
+      <input type="text" class="search-bar" placeholder="Search videos..." />
+      <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
+    </div>
+  </header>
 
-<header>
-  <div class="logo" onclick="window.location.href='feed.html'">ZapFix</div>
-  <button class="upload-btn" onclick="window.location.href='upload.html'">Upload Video</button>
-  <div class="search-bar">
-    <input type="text" placeholder="Search..." id="searchInput">
-  </div>
-</header>
-
-<div class="main-container">
-  <!-- 🎬 Left Section -->
-  <div class="video-section">
-    <video id="mainVideo" controls></video>
-    <div class="video-details">
-      <h2 id="videoTitle"></h2>
+  <div class="container">
+    <!-- 🔹 Left: Main Video -->
+    <div class="left-section">
+      <div class="video-player" id="mainVideo"></div>
+      <div class="video-title" id="videoTitle">Loading video...</div>
       <div class="video-actions">
-        <button class="like-btn" id="likeBtn">👍 <span id="likeCount">0</span></button>
-        <button class="link-btn" id="shareBtn">🔗 Copy Video Link</button>
+        <button class="action-btn">👍 Like</button>
+        <button class="action-btn" id="copyLinkBtn">🔗 Copy Link</button>
       </div>
-      <p id="videoDesc"></p>
+
+      <div class="comments-section">
+        <h3>Comments</h3>
+        <div class="comment-inputs">
+          <input type="text" id="nameInput" placeholder="Your name" />
+          <textarea id="commentInput" rows="3" placeholder="Write a comment..."></textarea>
+          <button class="publish-btn" onclick="addComment()">Publish</button>
+        </div>
+        <div class="comment-list" id="commentList"></div>
+      </div>
     </div>
 
-    <!-- 💬 Comments -->
-    <div class="comment-box">
-      <h3>Comments</h3>
-      <div class="comment-input">
-        <input type="text" id="commentName" placeholder="Your name">
-        <textarea id="commentText" rows="2" placeholder="Write a comment..."></textarea>
-        <button id="publishBtn">Publish</button>
-      </div>
-      <div class="comments-list" id="commentsList"></div>
+    <!-- 🔹 Right: Suggestions -->
+    <div class="right-section">
+      <h3>NEXT VIDEO SUGGESTIONS</h3>
+      <div id="suggestionsList"></div>
     </div>
   </div>
 
-  <!-- 📺 Right Section -->
-  <div class="suggestions">
-    <h3>Next Video Suggestions</h3>
-    <div id="suggestionList"></div>
-  </div>
-</div>
+  <script>
+    // Get video from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const title = urlParams.get("title");
+    const videoUrl = urlParams.get("video");
+    const thumbnail = urlParams.get("thumb");
 
-<script>
-const videoData = JSON.parse(localStorage.getItem("selectedVideo") || "{}");
-const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+    // Display main video
+    const videoPlayer = document.getElementById("mainVideo");
+    videoPlayer.innerHTML = `
+      <video width="100%" height="100%" controls poster="${thumbnail}">
+        <source src="${videoUrl}" type="video/mp4">
+      </video>
+    `;
+    document.getElementById("videoTitle").innerText = title || "Untitled Video";
 
-// 🟦 Display current video
-const mainVideo = document.getElementById("mainVideo");
-const videoTitle = document.getElementById("videoTitle");
-const videoDesc = document.getElementById("videoDesc");
+    // Copy video link
+    document.getElementById("copyLinkBtn").onclick = () => {
+      navigator.clipboard.writeText(window.location.href);
+      alert("Video link copied!");
+    };
 
-if(videoData.video){
-  mainVideo.src = videoData.video;
-  videoTitle.textContent = videoData.title;
-  videoDesc.textContent = videoData.description;
-}
+    // Comments feature
+    function addComment() {
+      const name = document.getElementById("nameInput").value.trim();
+      const comment = document.getElementById("commentInput").value.trim();
+      if (!name || !comment) return alert("Please enter both name and comment.");
+      const commentList = document.getElementById("commentList");
+      const div = document.createElement("div");
+      div.className = "comment-item";
+      div.innerHTML = `<b>${name}</b><p>${comment}</p>`;
+      commentList.prepend(div);
+      document.getElementById("nameInput").value = "";
+      document.getElementById("commentInput").value = "";
+    }
 
-// 🟦 Like Button (Permanent)
-const likeBtn = document.getElementById("likeBtn");
-const likeCount = document.getElementById("likeCount");
-const likeKey = `likes_${videoData.video}`;
-let likes = parseInt(localStorage.getItem(likeKey) || "0");
-likeCount.textContent = likes;
-
-likeBtn.addEventListener("click", () => {
-  likes++;
-  localStorage.setItem(likeKey, likes);
-  likeCount.textContent = likes;
-});
-
-// 🟦 Share Button
-document.getElementById("shareBtn").addEventListener("click", () => {
-  navigator.clipboard.writeText(window.location.href);
-  alert("✅ Video link copied!");
-});
-
-// 🟦 Comments (Permanent)
-const publishBtn = document.getElementById("publishBtn");
-const commentsList = document.getElementById("commentsList");
-const commentKey = `comments_${videoData.video}`;
-let comments = JSON.parse(localStorage.getItem(commentKey) || "[]");
-
-function renderComments(){
-  commentsList.innerHTML = comments.map(c =>
-    `<div class="comment-item"><strong>${c.name}</strong><p>${c.text}</p></div>`
-  ).join("");
-}
-renderComments();
-
-publishBtn.addEventListener("click", ()=>{
-  const name = document.getElementById("commentName").value.trim();
-  const text = document.getElementById("commentText").value.trim();
-  if(!name || !text) return alert("Please enter name and comment!");
-  comments.push({name, text});
-  localStorage.setItem(commentKey, JSON.stringify(comments));
-  renderComments();
-  document.getElementById("commentName").value="";
-  document.getElementById("commentText").value="";
-});
-
-// 🟦 Suggestions (Exclude current video)
-const suggestionList = document.getElementById("suggestionList");
-const suggestions = videos.filter(v => v.video !== videoData.video);
-suggestionList.innerHTML = suggestions.map(v => `
-  <div class="suggestion-item" onclick='viewVideo(${JSON.stringify(v).replace(/"/g, "&quot;")})'>
-    <img src="${v.thumbnail}" alt="thumb">
-    <div class="info"><p>${v.title}</p></div>
-  </div>
-`).join("");
-
-function viewVideo(v){
-  localStorage.setItem("selectedVideo", JSON.stringify(v));
-  window.location.href = "watch.html";
-}
-</script>
-
+    // Load suggestions from feed
+    const suggestionsList = document.getElementById("suggestionsList");
+    const storedVideos = JSON.parse(localStorage.getItem("videos")) || [];
+    storedVideos.forEach(v => {
+      const item = document.createElement("div");
+      item.className = "suggestion";
+      item.innerHTML = `
+        <img src="${v.thumbnail}" alt="">
+        <div class="suggestion-title">${v.title}</div>
+      `;
+      item.onclick = () => {
+        window.location.href = `watch.html?title=${encodeURIComponent(v.title)}&video=${encodeURIComponent(v.video)}&thumb=${encodeURIComponent(v.thumbnail)}`;
+      };
+      suggestionsList.appendChild(item);
+    });
+  </script>
 </body>
 </html>
