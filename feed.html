@@ -1,83 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZapFix - My Videos</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #E0F3FF;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZapFix - My Videos</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #E0F3FF;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
 
-    /* NAVBAR */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 25px;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+  /* NAVBAR */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* logo left, nav-right right */
+    background: #fff;
+    padding: 15px 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
 
-    .logo { font-size: 26px; font-weight: 700; color: #0077ff; cursor: pointer; }
-    .nav-right { display: flex; gap: 15px; }
+  .logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0077ff;
+    cursor: pointer;
+  }
 
-    .upload-btn { background: #0077ff; color: white; border: none; padding: 10px 18px; border-radius: 10px; cursor: pointer; }
-    .upload-btn:hover { background: #005cd1; }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-    .search-bar { display: flex; align-items: center; background: #f2f4f8; padding: 6px 10px; border-radius: 8px; gap: 8px; }
-    .search-bar i { color: #0077ff; }
-    .search-bar input { border: none; background: transparent; outline: none; font-size: 14px; width: 180px; }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: #f2f4f8;
+    padding: 6px 10px;
+    border-radius: 8px;
+    gap: 8px;
+  }
 
-    /* GRID LAYOUT */
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr); /* 4 videos per row */
-      gap: 20px;
-      padding: 30px;
-    }
+  .search-bar i {
+    color: #0077ff;
+  }
 
-    .video-card {
-      background: white;
-      border-radius: 12px;
-      padding: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .video-card:hover { transform: translateY(-3px); }
+  .search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    width: 160px;
+  }
 
-    .video-card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
+  .upload-btn {
+    background: #0077ff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.2s ease;
+  }
 
-    .video-card p {
-      font-weight: 600;
-      font-size: 14px;
-      margin-top: 8px;
-      color: #0077ff;
-    }
+  .upload-btn:hover {
+    background: #005cd1;
+  }
 
-    @media(max-width:900px){
-      .video-grid { grid-template-columns: repeat(2,1fr); padding: 15px; }
-    }
-    @media(max-width:600px){
-      .video-grid { grid-template-columns: 1fr; padding: 15px; }
-    }
-  </style>
+  /* VIDEO GRID */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 per row */
+    gap: 20px;
+    padding: 30px;
+  }
+
+  .video-card {
+    background: white;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .video-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .video-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .video-card p {
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 8px;
+    color: #0077ff;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width:1200px){
+    .video-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media(max-width:900px){
+    .video-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media(max-width:600px){
+    .video-grid { grid-template-columns: 1fr; padding: 15px; }
+    .nav-right { flex-direction: column; align-items: flex-end; gap: 8px; }
+    .search-bar input { width: 120px; }
+  }
+</style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
   <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
   <div class="nav-right">
@@ -89,52 +138,59 @@
   </div>
 </header>
 
+<!-- VIDEO GRID -->
 <div class="video-grid" id="videoGrid"></div>
 
 <script>
+document.addEventListener('DOMContentLoaded', async function() {
+
   const videoGrid = document.getElementById('videoGrid');
   const searchInput = document.getElementById('searchInput');
+  let videos = [];
 
-  // Fetch videos from backend
-  async function fetchVideos() {
+  // FETCH videos from backend
+  async function fetchVideos(){
     try {
-      const res = await fetch("http://localhost:5000/videos"); // backend endpoint
-      const videos = await res.json();
-      return videos;
-    } catch (err) {
-      console.error("Failed to fetch videos:", err);
-      return [];
+      const res = await fetch('http://localhost:5000/videos');
+      const data = await res.json();
+      if(data.success){
+        videos = data.videos;
+        renderVideos();
+      } else {
+        videoGrid.innerHTML = '<p style="color:red;">Failed to load videos</p>';
+      }
+    } catch(err){
+      console.error(err);
+      videoGrid.innerHTML = '<p style="color:red;">Error connecting to backend</p>';
     }
   }
 
-  // Render videos
-  async function renderVideos(filter = "") {
-    const videos = await fetchVideos();
+  // RENDER videos
+  function renderVideos(filter = ''){
+    videoGrid.innerHTML = '';
     const filtered = videos.filter(v => v.title.toLowerCase().includes(filter.toLowerCase()));
-
-    videoGrid.innerHTML = "";
+    if(filtered.length === 0){
+      videoGrid.innerHTML = '<p>No videos found</p>';
+      return;
+    }
     filtered.forEach(v => {
       const card = document.createElement('div');
       card.className = 'video-card';
-      card.innerHTML = `
-        <img src="${v.thumbnail}" alt="thumbnail">
-        <p>${v.title}</p>
-      `;
-      card.addEventListener('click', () => {
-        localStorage.setItem("selectedVideo", JSON.stringify(v));
+      card.innerHTML = `<img src="${v.thumbnail}" alt="thumbnail"><p>${v.title}</p>`;
+      card.addEventListener('click', ()=>{
+        localStorage.setItem('selectedVideo', JSON.stringify(v));
         window.location.href = 'watch.html';
       });
       videoGrid.appendChild(card);
     });
   }
 
-  // Initial render
-  renderVideos();
+  // SEARCH functionality
+  searchInput.addEventListener('input', ()=> renderVideos(searchInput.value));
 
-  // Search
-  searchInput.addEventListener("input", () => {
-    renderVideos(searchInput.value);
-  });
+  fetchVideos();
+
+});
 </script>
 
 </body>
