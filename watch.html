@@ -79,10 +79,10 @@
 
 <script>
 (async function() {
+  const backendURL = "http://localhost:5000"; // change to your hosting URL later
   const videoPlayer = document.getElementById('videoPlayer');
   const videoTitle = document.getElementById('videoTitle');
   const nextVideosContainer = document.getElementById('nextVideos');
-
   const likeBtn = document.getElementById('likeBtn');
   const likeCount = document.getElementById('likeCount');
   const nameInput = document.getElementById('userName');
@@ -90,26 +90,25 @@
   const postBtn = document.getElementById('postComment');
   const commentsList = document.getElementById('commentsList');
 
-  // GET selected video from localStorage
   let selectedVideo = JSON.parse(localStorage.getItem('selectedVideo') || '{}');
-
-  // FETCH all videos from backend
   let allVideos = [];
+
   try {
-    const res = await fetch('http://localhost:5000/videos');
+    const res = await fetch(`${backendURL}/videos`);
     const data = await res.json();
-    if(data.success) allVideos = data.videos;
-  } catch(err){
-    console.error('Failed to fetch videos', err);
+    if (data.success) allVideos = data.videos;
+  } catch (err) {
+    console.error("Backend connection failed:", err);
   }
 
-  // Render selected video
-  if(selectedVideo && selectedVideo.video){
+  if (selectedVideo && selectedVideo.video) {
     videoPlayer.src = selectedVideo.video;
     videoTitle.textContent = selectedVideo.title;
+  } else {
+    videoTitle.textContent = "No video selected.";
   }
 
-  // LIKE functionality
+  // LIKE system
   const likeKey = `likes_${selectedVideo.title || 'none'}`;
   let likes = parseInt(localStorage.getItem(likeKey) || '0');
   likeCount.textContent = likes;
@@ -119,12 +118,12 @@
     localStorage.setItem(likeKey, likes);
   });
 
-  // COMMENTS functionality
+  // COMMENTS system
   const commentKey = `comments_${selectedVideo.title || 'none'}`;
   let comments = JSON.parse(localStorage.getItem(commentKey) || '[]');
-  function renderComments(){
+  function renderComments() {
     commentsList.innerHTML = '';
-    comments.forEach(c=>{
+    comments.forEach(c => {
       const div = document.createElement('div');
       div.className = 'comment';
       div.innerHTML = `<strong>${c.name}</strong><p>${c.text}</p>`;
@@ -133,20 +132,21 @@
   }
   renderComments();
 
-  postBtn.addEventListener('click', ()=>{
+  postBtn.addEventListener('click', () => {
     const name = nameInput.value.trim();
     const text = commentInput.value.trim();
-    if(!name || !text) return alert('Enter name and comment');
-    comments.push({name,text});
+    if (!name || !text) return alert('Enter name and comment');
+    comments.push({ name, text });
     localStorage.setItem(commentKey, JSON.stringify(comments));
     renderComments();
     nameInput.value = '';
     commentInput.value = '';
   });
 
-  // NEXT VIDEO suggestions
-  const filteredNext = allVideos.filter(v => v.title !== (selectedVideo.title || ''));
-  filteredNext.forEach(v=>{
+  // NEXT videos
+  const nextVideos = allVideos.filter(v => v.title !== selectedVideo.title);
+  nextVideosContainer.innerHTML = '';
+  nextVideos.forEach(v => {
     const div = document.createElement('div');
     div.className = 'next-video';
     div.innerHTML = `<img src="${v.thumbnail}" alt="thumb"><span>${v.title}</span>`;
@@ -157,13 +157,14 @@
     nextVideosContainer.appendChild(div);
   });
 
-  // SEARCH functionality in header
+  // SEARCH filter for next videos
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('input', () => {
     const query = searchInput.value.toLowerCase();
     nextVideosContainer.innerHTML = '';
-    filteredNext.filter(v => v.title.toLowerCase().includes(query))
-      .forEach(v=>{
+    nextVideos
+      .filter(v => v.title.toLowerCase().includes(query))
+      .forEach(v => {
         const div = document.createElement('div');
         div.className = 'next-video';
         div.innerHTML = `<img src="${v.thumbnail}" alt="thumb"><span>${v.title}</span>`;
@@ -174,7 +175,6 @@
         nextVideosContainer.appendChild(div);
       });
   });
-
 })();
 </script>
 </body>
