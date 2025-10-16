@@ -102,7 +102,7 @@ uploadBtn.addEventListener("click", async () => {
     formData.append("thumbnail", thumbFile);
     formData.append("video", videoFile);
 
-    const res = await fetch("http://localhost:5000/upload", {
+    const res = await fetch("https://zapfix-backend-d5cd.onrender.com/", {
       method: "POST",
       body: formData
     });
@@ -127,3 +127,4 @@ uploadBtn.addEventListener("click", async () => {
 </script>
 </body>
 </html>
+
