@@ -142,68 +142,63 @@
 <div class="video-grid" id="videoGrid"></div>
 
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  const videoGrid = document.getElementById('videoGrid');
-  const searchInput = document.getElementById('searchInput');
+// ✅ Fetch & display videos from Render backend
+document.addEventListener("DOMContentLoaded", async () => {
+  const videoGrid = document.getElementById("videoGrid");
+  const searchInput = document.getElementById("searchInput");
   let videos = [];
 
   async function fetchVideos() {
+    videoGrid.innerHTML = "<p style='color:gray;'>⏳ Loading videos...</p>";
     try {
-      const res = await fetch('https://zapfix-backend-ylp5.onrender.com');
-      const data = await res.json();
+      const res = await fetch("https://zapfix-backend-ylp5.onrender.com/videos");
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
 
-      // ✅ Backend returns an array directly
+      const data = await res.json();
       if (Array.isArray(data)) {
         videos = data;
-        renderVideos();
-      } 
-      // ✅ Backend returns { success: true, videos: [...] }
-      else if (data.success && Array.isArray(data.videos)) {
+      } else if (data.success && Array.isArray(data.videos)) {
         videos = data.videos;
-        renderVideos();
-      } 
-      else {
-        videoGrid.innerHTML = '<p style="color:red;">⚠️ Failed to load videos</p>';
+      } else {
+        throw new Error("Invalid response format");
       }
+      renderVideos();
     } catch (err) {
-      console.error('Fetch error:', err);
-      videoGrid.innerHTML = '<p style="color:red;">❌ Error connecting to backend</p>';
+      console.error("Fetch error:", err);
+      videoGrid.innerHTML = "<p style='color:red;'>❌ Error connecting to backend</p>";
     }
   }
 
-  function renderVideos(filter = '') {
-    videoGrid.innerHTML = '';
-    const filtered = videos.filter(v => 
+  function renderVideos(filter = "") {
+    videoGrid.innerHTML = "";
+    const filtered = videos.filter(v =>
       v.title && v.title.toLowerCase().includes(filter.toLowerCase())
     );
 
     if (filtered.length === 0) {
-      videoGrid.innerHTML = '<p>No videos found</p>';
+      videoGrid.innerHTML = "<p>No videos found</p>";
       return;
     }
 
     filtered.forEach(v => {
-      const card = document.createElement('div');
-      card.className = 'video-card';
+      const card = document.createElement("div");
+      card.className = "video-card";
       card.innerHTML = `
         <img src="${v.thumbnail}" alt="Thumbnail">
         <p>${v.title}</p>
       `;
-      card.addEventListener('click', () => {
-        localStorage.setItem('selectedVideo', JSON.stringify(v));
-        window.location.href = 'watch.html';
+      card.addEventListener("click", () => {
+        localStorage.setItem("selectedVideo", JSON.stringify(v));
+        window.location.href = "watch.html";
       });
       videoGrid.appendChild(card);
     });
   }
 
-  searchInput.addEventListener('input', () => renderVideos(searchInput.value));
+  searchInput.addEventListener("input", () => renderVideos(searchInput.value));
   fetchVideos();
 });
 </script>
 
 </body>
 </html>
-
-
-
