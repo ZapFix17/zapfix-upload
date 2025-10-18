@@ -61,72 +61,77 @@ const videoPreview = document.getElementById("videoPreview");
 const uploadBtn = document.getElementById("uploadBtn");
 const status = document.getElementById("status");
 
-// Thumbnail preview
+// ✅ Thumbnail preview
 thumbInput.addEventListener("change", e => {
   const file = e.target.files[0];
-  if(file){
+  if (file) {
     const reader = new FileReader();
-    reader.onload = () => { thumbPreview.innerHTML = `<img src="${reader.result}" alt="Thumbnail Preview">`; };
+    reader.onload = () => {
+      thumbPreview.innerHTML = `<img src="${reader.result}" alt="Thumbnail Preview">`;
+    };
     reader.readAsDataURL(file);
   }
 });
 
-// Video preview
+// ✅ Video preview
 videoInput.addEventListener("change", e => {
   const file = e.target.files[0];
-  if(file){
+  if (file) {
     const reader = new FileReader();
-    reader.onload = () => { videoPreview.innerHTML = `<video src="${reader.result}" controls></video>`; };
+    reader.onload = () => {
+      videoPreview.innerHTML = `<video src="${reader.result}" controls></video>`;
+    };
     reader.readAsDataURL(file);
   }
 });
 
-// Upload to backend
+// ✅ Upload video to backend
 uploadBtn.addEventListener("click", async () => {
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
   const thumbFile = thumbInput.files[0];
   const videoFile = videoInput.files[0];
 
-  if(!title || !description || !thumbFile || !videoFile){
-    alert("Please fill all fields and select files!");
+  if (!title || !description || !thumbFile || !videoFile) {
+    alert("Please fill all fields and select both files!");
     return;
   }
 
-  try{
-    status.textContent = "Uploading to server...";
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("description", description);
+  formData.append("thumbnail", thumbFile);
+  formData.append("video", videoFile);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("thumbnail", thumbFile);
-    formData.append("video", videoFile);
+  status.textContent = "⏳ Uploading, please wait...";
 
-    const res = await fetch("https://zapfix-backend-ylp5.onrender.com", {
+  try {
+    const res = await fetch("https://zapfix-backend-ylp5.onrender.com/upload", {
       method: "POST",
       body: formData
     });
 
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+
     const data = await res.json();
 
-    if(!data.success) throw new Error("Upload failed on server");
-
-    // Save to localStorage for feed.html
-    const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-    videos.push({ title, description, thumbnail: data.thumbnail, video: data.video });
-    localStorage.setItem("videos", JSON.stringify(videos));
-
-    status.textContent = "✅ Upload complete! Redirecting...";
-    setTimeout(()=> window.location.href = "feed.html", 1000);
-
-  } catch(err) {
-    console.error(err);
+    if (data.success) {
+      status.textContent = "✅ Upload successful! Redirecting...";
+      setTimeout(() => {
+        window.location.href = "feed.html";
+      }, 1500);
+    } else {
+      throw new Error(data.error || "Upload failed on server");
+    }
+  } catch (err) {
+    console.error("Upload error:", err);
     status.textContent = "❌ Upload failed! Check backend or file size.";
   }
 });
 </script>
 </body>
 </html>
+
 
 
 
