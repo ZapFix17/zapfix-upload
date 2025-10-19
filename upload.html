@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Upload Video - ZapFix</title>
 <style>
   body { font-family:'Poppins',sans-serif; background:#E0F3FF; margin:0; padding:0; color:#333; }
@@ -26,8 +26,8 @@
 </head>
 <body>
 <header>
-  <div class="logo" onclick="window.location.href='feed.html'">ZAPFIX</div>
-  <button class="back-btn" onclick="window.location.href='feed.html'">← Back</button>
+  <div class="logo" onclick="location.href='feed.html'">ZAPFIX</div>
+  <button class="back-btn" onclick="location.href='feed.html'">← Back</button>
 </header>
 
 <div class="container">
@@ -54,6 +54,8 @@
 </div>
 
 <script>
+const BACKEND_URL = "https://zapfix-backend-f8km.onrender.com"; // <<-- set your Render URL here if different
+
 const thumbInput = document.getElementById("thumbnail");
 const videoInput = document.getElementById("video");
 const thumbPreview = document.getElementById("thumbPreview");
@@ -61,31 +63,27 @@ const videoPreview = document.getElementById("videoPreview");
 const uploadBtn = document.getElementById("uploadBtn");
 const status = document.getElementById("status");
 
-// ✅ Thumbnail preview
+// Thumbnail preview
 thumbInput.addEventListener("change", e => {
   const file = e.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = () => {
-      thumbPreview.innerHTML = `<img src="${reader.result}" alt="Thumbnail Preview">`;
-    };
+    reader.onload = () => (thumbPreview.innerHTML = `<img src="${reader.result}" alt="Thumbnail Preview">`);
     reader.readAsDataURL(file);
   }
 });
 
-// ✅ Video preview
+// Video preview
 videoInput.addEventListener("change", e => {
   const file = e.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = () => {
-      videoPreview.innerHTML = `<video src="${reader.result}" controls></video>`;
-    };
+    reader.onload = () => (videoPreview.innerHTML = `<video src="${reader.result}" controls></video>`);
     reader.readAsDataURL(file);
   }
 });
 
-// ✅ Upload video to backend
+// Upload to backend
 uploadBtn.addEventListener("click", async () => {
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
@@ -97,32 +95,30 @@ uploadBtn.addEventListener("click", async () => {
     return;
   }
 
+  status.textContent = "⏳ Uploading... (this can take a while for large files)";
+
   const formData = new FormData();
   formData.append("title", title);
   formData.append("description", description);
   formData.append("thumbnail", thumbFile);
   formData.append("video", videoFile);
 
-  status.textContent = "⏳ Uploading, please wait...";
-
   try {
-    const res = await fetch("https://zapfix-backend-f8km.onrender.com/upload", {
+    const res = await fetch(BACKEND_URL + "/upload", {
       method: "POST",
       body: formData
     });
 
-    if (!res.ok) throw new Error(`Server returned ${res.status}`);
-
     const data = await res.json();
 
-    if (data.success) {
-      status.textContent = "✅ Upload successful! Redirecting...";
-      setTimeout(() => {
-        window.location.href = "feed.html";
-      }, 1500);
-    } else {
-      throw new Error(data.error || "Upload failed on server");
+    if (!res.ok || !data.success) {
+      console.error("Upload failed server response:", data);
+      status.textContent = "❌ Upload failed! " + (data.message || data.error || "Check backend or file size.");
+      return;
     }
+
+    status.textContent = "✅ Upload complete — redirecting to feed...";
+    setTimeout(() => (location.href = "feed.html"), 1200);
   } catch (err) {
     console.error("Upload error:", err);
     status.textContent = "❌ Upload failed! Check backend or file size.";
@@ -131,8 +127,3 @@ uploadBtn.addEventListener("click", async () => {
 </script>
 </body>
 </html>
-
-
-
-
-
