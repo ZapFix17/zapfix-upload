@@ -1,0 +1,358 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ZapFix Admin</title>
+  <style>
+    body{font-family:Inter,system-ui,Arial;padding:0;margin:0;background:#f3f7fb;color:#111}
+    header{background:#fff;padding:14px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center}
+    .brand{font-weight:800;color:#0077ff}
+    .container{max-width:1100px;margin:20px auto;padding:12px}
+    .card{background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
+    .row{display:flex;gap:8px;align-items:center}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+    .btn{padding:8px 10px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+    .btn-danger{background:#ff5c5c;color:#fff}
+    .btn-primary{background:#0077ff;color:#fff}
+    .small{font-size:13px;padding:6px 8px}
+    .input{padding:8px;border:1px solid #ddd;border-radius:8px}
+    .flex{display:flex;gap:8px;align-items:center}
+    .right{margin-left:auto}
+    .muted{color:#666;font-size:13px}
+    .mt{margin-top:12px}
+    .mb{margin-bottom:12px}
+    .editable{background:#fbfdff;border:1px dashed #dfefff;padding:8px;border-radius:8px}
+    .comment-list{max-height:200px;overflow:auto}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">ZAPFIX Admin</div>
+    <div id="authArea"></div>
+  </header>
+
+  <div class="container">
+    <div id="loginCard" class="card">
+      <h3>Admin Login / Signup</h3>
+      <div class="row mt">
+        <input id="admUser" placeholder="username" class="input" />
+        <input id="admPass" placeholder="password" type="password" class="input" />
+        <button id="btnLogin" class="btn btn-primary">Login</button>
+        <button id="btnSignup" class="btn">Signup</button>
+      </div>
+      <div id="loginMsg" class="mt muted"></div>
+    </div>
+
+    <div id="dash" style="display:none" class="card mt">
+      <div style="display:flex;align-items:center;gap:8px">
+        <h3 style="margin:0">Videos</h3>
+        <div class="right">
+          <button id="btnRefresh" class="btn small">Refresh</button>
+          <button id="btnLogout" class="btn small" style="margin-left:8px">Logout</button>
+        </div>
+      </div>
+
+      <div id="videosTableWrap" class="mt">
+        <table id="videosTable">
+          <thead>
+            <tr>
+              <th>Thumbnail</th>
+              <th>Title / Description</th>
+              <th>Likes</th>
+              <th>Comments</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="editorModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center">
+      <div style="width:720px;max-width:92%;background:#fff;padding:12px;border-radius:10px">
+        <h3>Edit Video</h3>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <input id="editTitle" class="input" placeholder="Title" />
+          <textarea id="editDesc" class="input" rows="4" placeholder="Description"></textarea>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button id="closeEditor" class="btn">Cancel</button>
+            <button id="saveEditor" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+/* ---------- CHANGE BACKEND URL HERE ---------- */
+const BACKEND = "https://zapfix-backend-ylp5.onrender.com"; // <-- change if needed
+
+// Elements
+const admUser = document.getElementById('admUser');
+const admPass = document.getElementById('admPass');
+const btnLogin = document.getElementById('btnLogin');
+const btnSignup = document.getElementById('btnSignup');
+const loginMsg = document.getElementById('loginMsg');
+const authArea = document.getElementById('authArea');
+
+const dash = document.getElementById('dash');
+const videosTableBody = document.querySelector('#videosTable tbody');
+const btnRefresh = document.getElementById('btnRefresh');
+const btnLogout = document.getElementById('btnLogout');
+
+const editorModal = document.getElementById('editorModal');
+const editTitle = document.getElementById('editTitle');
+const editDesc = document.getElementById('editDesc');
+const closeEditor = document.getElementById('closeEditor');
+const saveEditor = document.getElementById('saveEditor');
+
+let currentToken = localStorage.getItem('zapfix_admin_token') || null;
+let videos = [];
+let editingVideoId = null;
+
+// show auth area if logged in
+function renderAuthArea(){
+  authArea.innerHTML = '';
+  if(currentToken){
+    const span = document.createElement('span');
+    span.textContent = 'Admin';
+    span.style.fontWeight = 700;
+    authArea.appendChild(span);
+  } else {
+    authArea.innerHTML = '<span class="muted">Not logged in</span>';
+  }
+}
+renderAuthArea();
+
+// Helper: fetch with auth
+async function authFetch(url, opts = {}){
+  opts.headers = opts.headers || {};
+  opts.headers['Content-Type'] = opts.headers['Content-Type'] || 'application/json';
+  if(currentToken) opts.headers['Authorization'] = 'Bearer ' + currentToken;
+  const r = await fetch(url, opts);
+  const j = await r.json().catch(()=>({ success:false, message:'Invalid JSON' }));
+  return j;
+}
+
+// Login
+btnLogin.addEventListener('click', async ()=>{
+  const u = admUser.value.trim();
+  const p = admPass.value.trim();
+  if(!u || !p) { loginMsg.textContent = 'Enter username & password'; return; }
+  loginMsg.textContent = 'Logging in...';
+  try{
+    const res = await fetch(BACKEND + '/admin/login', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const data = await res.json();
+    if(data.success && data.token){
+      currentToken = data.token;
+      localStorage.setItem('zapfix_admin_token', currentToken);
+      loginMsg.textContent = 'Login success';
+      showDashboard();
+      renderAuthArea();
+    } else {
+      loginMsg.textContent = data.message || 'Login failed';
+    }
+  } catch(err){
+    loginMsg.textContent = 'Network error';
+    console.error(err);
+  }
+});
+
+// Signup (use carefully)
+btnSignup.addEventListener('click', async ()=>{
+  const u = admUser.value.trim();
+  const p = admPass.value.trim();
+  if(!u || !p) { loginMsg.textContent = 'Enter username & password'; return; }
+  loginMsg.textContent = 'Signing up...';
+  try{
+    const res = await fetch(BACKEND + '/admin/signup', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const data = await res.json();
+    if(data.success && data.token){
+      currentToken = data.token;
+      localStorage.setItem('zapfix_admin_token', currentToken);
+      loginMsg.textContent = 'Signup success';
+      showDashboard();
+      renderAuthArea();
+    } else {
+      loginMsg.textContent = data.message || 'Signup failed';
+    }
+  } catch(err){
+    loginMsg.textContent = 'Network error';
+    console.error(err);
+  }
+});
+
+btnLogout.addEventListener('click', ()=>{
+  currentToken = null;
+  localStorage.removeItem('zapfix_admin_token');
+  location.reload();
+});
+
+// show dashboard
+async function showDashboard(){
+  document.getElementById('loginCard').style.display = 'none';
+  dash.style.display = 'block';
+  await loadVideos();
+}
+
+// load videos
+async function loadVideos(){
+  videosTableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+  try{
+    const json = await authFetch(BACKEND + '/admin/videos');
+    if(json.success && Array.isArray(json.videos)){
+      videos = json.videos;
+      renderVideosTable();
+    } else {
+      videosTableBody.innerHTML = '<tr><td colspan="6">Failed to load (maybe not authorized)</td></tr>';
+    }
+  } catch(e){
+    videosTableBody.innerHTML = '<tr><td colspan="6">Network error</td></tr>';
+    console.error(e);
+  }
+}
+
+// render table
+function renderVideosTable(){
+  videosTableBody.innerHTML = '';
+  if(videos.length === 0){
+    videosTableBody.innerHTML = '<tr><td colspan="6">No videos</td></tr>';
+    return;
+  }
+  videos.forEach(v=>{
+    const id = v._id || v.id;
+    const tr = document.createElement('tr');
+
+    const thumbTd = document.createElement('td');
+    thumbTd.innerHTML = `<img src="${v.thumbnail}" style="width:140px;height:80px;object-fit:cover;border-radius:6px" />`;
+
+    const titleTd = document.createElement('td');
+    titleTd.innerHTML = `<div style="font-weight:700;color:#0077ff">${escapeHtml(v.title||'')}</div>
+                         <div class="muted" style="margin-top:6px">${escapeHtml((v.description||'').slice(0,160))}</div>`;
+
+    const likesTd = document.createElement('td'); likesTd.textContent = v.likes || 0;
+    const commentsTd = document.createElement('td');
+    commentsTd.innerHTML = `<div class="muted">${(v.comments||[]).length} comments</div>
+                            <button class="btn small" onclick="openComments('${id}')">View</button>`;
+
+    const createdTd = document.createElement('td');
+    createdTd.textContent = new Date(v.createdAt).toLocaleString();
+
+    const actionsTd = document.createElement('td');
+    actionsTd.innerHTML = `
+      <div style="display:flex;gap:6px">
+        <button class="btn small" onclick="openEditor('${id}')">Edit</button>
+        <button class="btn small btn-danger" onclick="deleteVideo('${id}')">Delete</button>
+      </div>
+    `;
+
+    tr.appendChild(thumbTd);
+    tr.appendChild(titleTd);
+    tr.appendChild(likesTd);
+    tr.appendChild(commentsTd);
+    tr.appendChild(createdTd);
+    tr.appendChild(actionsTd);
+
+    videosTableBody.appendChild(tr);
+  });
+}
+
+// helpers: escape
+function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;" })[m]); }
+
+// open editor
+window.openEditor = function(id){
+  const v = videos.find(x => (x._id||x.id) === id);
+  if(!v) return alert('Video not found');
+  editingVideoId = id;
+  editTitle.value = v.title || '';
+  editDesc.value = v.description || '';
+  editorModal.style.display = 'flex';
+}
+
+// close editor
+closeEditor.addEventListener('click', ()=> { editorModal.style.display = 'none'; editingVideoId = null; });
+
+// save editor
+saveEditor.addEventListener('click', async ()=>{
+  if(!editingVideoId) return;
+  const t = editTitle.value.trim();
+  const d = editDesc.value.trim();
+  try{
+    const json = await authFetch(BACKEND + '/admin/videos/' + editingVideoId, {
+      method:'PUT',
+      body: JSON.stringify({ title: t, description: d })
+    });
+    if(json.success){
+      alert('Saved');
+      editorModal.style.display = 'none';
+      editingVideoId = null;
+      await loadVideos();
+    } else {
+      alert('Save failed');
+    }
+  } catch(e){ console.error(e); alert('Network or auth error'); }
+});
+
+// delete video
+window.deleteVideo = async function(id){
+  if(!confirm('Delete this video? This will remove DB record and Cloudinary assets.')) return;
+  try{
+    const json = await authFetch(BACKEND + '/admin/videos/' + id, { method: 'DELETE' });
+    if(json.success){
+      alert('Deleted');
+      await loadVideos();
+    } else {
+      alert('Delete failed');
+    }
+  } catch(e){ console.error(e); alert('Network or auth error'); }
+}
+
+// comments modal (simple prompt-based viewing & deleting)
+window.openComments = async function(id){
+  try{
+    const json = await authFetch(BACKEND + '/admin/videos/' + id + '/comments');
+    if(json.success){
+      const list = json.comments || [];
+      let html = 'Comments:\\n\\n';
+      for(let c of list){
+        html += `- ${c.name}: ${c.text} (id: ${c._id})\\n`;
+      }
+      const action = prompt('Comments displayed in console. To delete a comment, type its ID. Leave empty to close.\\n(IDs also logged in console.)');
+      console.log('Comments for', id, list);
+      if(action){
+        // delete comment
+        const del = await authFetch(BACKEND + '/admin/videos/' + id + '/comments/' + action, { method: 'DELETE' });
+        if(del.success){
+          alert('Comment deleted');
+          await loadVideos();
+        } else alert('Delete failed');
+      }
+    } else {
+      alert('Failed to load comments');
+    }
+  } catch(e){ console.error(e); alert('Network error'); }
+}
+
+// refresh
+btnRefresh.addEventListener('click', loadVideos);
+
+// On load, if token exists, show dashboard
+if(currentToken){
+  showDashboard();
+}
+</script>
+</body>
+</html>
