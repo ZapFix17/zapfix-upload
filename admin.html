@@ -87,7 +87,7 @@ function renderVideos(videos){
       formData.append("description", newDesc);
       if(thumbFile) formData.append("thumbnail", thumbFile);
 
-      const res = await fetch(`https://zapfix-backend-ylp5.onrender.com/admin/video/${video._id}`, {
+      const res = await fetch(`https://zapfix-backend-f8km.onrender.com/admin/video/${video._id}`, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData
@@ -99,7 +99,7 @@ function renderVideos(videos){
 
     div.querySelector(".deleteBtn").addEventListener('click', async () => {
       if(!confirm("Delete this video?")) return;
-      const res = await fetch(`https://zapfix-backend-ylp5.onrender.com/admin/video/${video._id}`, {
+      const res = await fetch(`https://zapfix-backend-f8km.onrender.com/admin/video/${video._id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });
@@ -112,7 +112,7 @@ function renderVideos(videos){
       btn.addEventListener('click', async () => {
         const vid = btn.dataset.videoid;
         const cid = btn.dataset.commentid;
-        const res = await fetch(`https://zapfix-backend-ylp5.onrender.com/admin/video/${vid}/comment/${cid}`, {
+        const res = await fetch(`https://zapfix-backend-f8km.onrender.com/admin/video/${vid}/comment/${cid}`, {
           method: "DELETE",
           headers: { "Authorization": `Bearer ${token}` }
         });
@@ -128,4 +128,5 @@ fetchVideos();
 </script>
 </body>
 </html>
+
 
